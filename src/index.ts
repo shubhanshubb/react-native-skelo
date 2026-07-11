@@ -6,6 +6,9 @@
  * @packageDocumentation
  */
 
+// Main component
+export { Skeleton } from './components/Skeleton';
+
 // Global API
 export { Skelo } from './Skelo';
 
@@ -20,6 +23,3 @@ export type {
 
 // Primitives (for plugin development)
 export { SkeletonBox, SkeletonText, SkeletonImage, SkeletonCircle } from './components/primitives';
-
-// Note: Main <Skeleton> component will be exported once implemented
-// export { Skeleton } from './components/Skeleton';

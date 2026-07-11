@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react';
+import { View, StyleSheet } from 'react-native';
 import type { TextProps } from '../../types';
+import { AnimationWrapper } from '../../animations';
+import type { AnimationType } from '../../animations';
 
 /**
  * Text skeleton primitive with multiple lines
@@ -17,7 +19,16 @@ export function SkeletonText({
   width = '100%',
   lastLineWidth = '60%',
   style,
-}: TextProps) {
+  animation = 'shimmer',
+  baseColor,
+  highlightColor,
+  duration,
+}: TextProps & {
+  animation?: AnimationType;
+  baseColor?: string;
+  highlightColor?: string;
+  duration?: number;
+}) {
   const calculatedLineHeight = lineHeight || fontSize * 1.4;
 
   return (
@@ -27,13 +38,18 @@ export function SkeletonText({
         const lineWidth = isLastLine && lines > 1 ? lastLineWidth : width;
 
         return (
-          <View
+          <AnimationWrapper
             key={index}
+            animation={animation}
+            width={lineWidth}
+            height={fontSize}
+            borderRadius={4}
+            baseColor={baseColor}
+            highlightColor={highlightColor}
+            duration={duration}
             style={[
               styles.line,
               {
-                width: lineWidth,
-                height: fontSize,
                 marginBottom: index < lines - 1 ? calculatedLineHeight - fontSize : 0,
               },
             ]}
@@ -46,7 +62,7 @@ export function SkeletonText({
 
 const styles = StyleSheet.create({
   line: {
-    borderRadius: 4,
+    overflow: 'hidden',
   },
 });
 

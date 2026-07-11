@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import type { BoxProps } from '../../types';
+import { AnimationWrapper } from '../../animations';
+import type { AnimationType } from '../../animations';
 
 /**
  * Basic box skeleton primitive
@@ -13,24 +15,32 @@ import type { BoxProps } from '../../types';
 export function SkeletonBox({
   width,
   height,
-  borderRadius,
+  borderRadius = 4,
   style,
   children,
-}: BoxProps) {
+  animation = 'shimmer',
+  baseColor,
+  highlightColor,
+  duration,
+}: BoxProps & {
+  animation?: AnimationType;
+  baseColor?: string;
+  highlightColor?: string;
+  duration?: number;
+}) {
   return (
-    <View
-      style={[
-        styles.box,
-        {
-          width,
-          height,
-          borderRadius,
-        },
-        style,
-      ]}
+    <AnimationWrapper
+      animation={animation}
+      width={width}
+      height={height}
+      borderRadius={borderRadius}
+      baseColor={baseColor}
+      highlightColor={highlightColor}
+      duration={duration}
+      style={[styles.box, style]}
     >
       {children}
-    </View>
+    </AnimationWrapper>
   );
 }
 

@@ -1,6 +1,9 @@
 import React, { isValidElement } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
+// Re-exported so consumers can access it from the skelo utils surface
+export { isValidElement };
+
 /**
  * Get component display name or type name
  *
@@ -15,7 +18,8 @@ export function getComponentName(element: ReactElement): string {
   }
 
   if (typeof type === 'function') {
-    return type.displayName || type.name || 'Component';
+    const fn = type as { displayName?: string; name?: string };
+    return fn.displayName || fn.name || 'Anonymous';
   }
 
   return 'Unknown';

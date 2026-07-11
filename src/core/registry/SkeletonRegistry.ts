@@ -7,7 +7,7 @@ import type { SkeletonPlugin } from '../../types';
  * Manages mapping between React components and their skeleton generation strategies
  */
 export class SkeletonRegistry {
-  private plugins: Map<ComponentType, SkeletonPlugin> = new Map();
+  private plugins: Map<ComponentType<any>, SkeletonPlugin> = new Map();
   private nameIndex: Map<string, SkeletonPlugin> = new Map();
 
   /**

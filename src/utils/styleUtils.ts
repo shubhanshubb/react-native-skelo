@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import type { DimensionValue } from 'react-native';
 import type { ResolvedStyle } from '../types';
 
 /**
@@ -32,11 +33,21 @@ export function resolveStyle(style: any): ResolvedStyle {
  */
 export function extractDimensions(
   style: ResolvedStyle
-): { width?: number | string; height?: number | string } {
+): { width?: DimensionValue; height?: DimensionValue } {
   return {
     width: style.width,
     height: style.height,
   };
+}
+
+/**
+ * Check if a resolved style declares both an explicit width and height
+ *
+ * @param style - Resolved style object
+ * @returns True if both width and height are defined
+ */
+export function hasExplicitSize(style: ResolvedStyle): boolean {
+  return style.width !== undefined && style.height !== undefined;
 }
 
 /**

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { DimensionValue, FlexAlignType } from 'react-native';
 
 /**
  * Props for the main Skeleton component
@@ -118,8 +119,8 @@ export interface SkeletonConfig {
  * Resolved style properties extracted from React Native styles
  */
 export interface ResolvedStyle {
-  width?: number | string;
-  height?: number | string;
+  width?: DimensionValue;
+  height?: DimensionValue;
   borderRadius?: number;
   backgroundColor?: string;
   fontSize?: number;
@@ -133,8 +134,14 @@ export interface ResolvedStyle {
   paddingLeft?: number;
   paddingRight?: number;
   flexDirection?: 'row' | 'column';
-  alignItems?: string;
-  justifyContent?: string;
+  alignItems?: FlexAlignType;
+  justifyContent?:
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly';
 }
 
 /**

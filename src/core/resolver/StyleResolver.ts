@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import type { DimensionValue } from 'react-native';
 import type { ResolvedStyle } from '../../types';
 import { resolveStyle, extractDimensions } from '../../utils';
 
@@ -26,8 +27,8 @@ export class StyleResolver {
    * @returns Object with width and height
    */
   static getDimensions(element: ReactElement): {
-    width?: number | string;
-    height?: number | string;
+    width?: DimensionValue;
+    height?: DimensionValue;
   } {
     const style = this.resolve(element);
     return extractDimensions(style);

@@ -4,7 +4,7 @@
   "description": "Automatic skeleton loading for React Native. Write your UI once, Skelo builds the loading state automatically.",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
-  "types": "lib/typescript/src/index.d.ts",
+  "types": "lib/typescript/index.d.ts",
   "react-native": "src/index.ts",
   "source": "src/index.ts",
   "files": [
@@ -22,7 +22,10 @@
     "lint:fix": "eslint \"**/*.{js,ts,tsx}\" --fix",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
     "prepare": "bob build",
-    "release": "release-it",
+    "prepublishOnly": "bob build",
+    "publish:npm": "npm publish --access public",
+    "publish:git": "git push origin HEAD --tags",
+    "release": "npm run build && npm publish --access public && git push origin HEAD --tags",
     "clean": "del-cli lib"
   },
   "keywords": [
@@ -43,19 +46,31 @@
     "type": "git",
     "url": "git+https://github.com/shubhanshubb/react-native-skelo.git"
   },
-  "author": "Shubhanshu <https://shubhanshubb.dev>",
+  "author": "Shubhanshu Barnwal <connect@shubhanshubb.dev> (https://shubhanshubb.dev)",
+  "maintainers": [
+    {
+      "name": "Shubhanshu Barnwal",
+      "email": "connect@shubhanshubb.dev",
+      "url": "https://shubhanshubb.dev"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/shubhanshubb/react-native-skelo/issues"
   },
   "homepage": "https://github.com/shubhanshubb/react-native-skelo#readme",
+  "funding": {
+    "type": "individual",
+    "url": "https://buymeacoffee.com/shubhanshubb"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated": ">=3.0.0"
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-linear-gradient": ">=2.8.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^18.4.3",
@@ -73,6 +88,7 @@
     "react": "18.2.0",
     "react-native": "0.73.1",
     "react-native-builder-bob": "^0.23.2",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-reanimated": "^3.6.1",
     "react-test-renderer": "18.2.0",
     "release-it": "^17.0.1",
@@ -80,8 +96,14 @@
   },
   "jest": {
     "preset": "react-native",
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
     "modulePathIgnorePatterns": [
       "<rootDir>/lib/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@react-native|react-native|react-native-reanimated|react-native-linear-gradient)/)"
     ],
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",

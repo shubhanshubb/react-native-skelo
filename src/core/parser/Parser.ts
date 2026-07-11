@@ -62,7 +62,7 @@ export class Parser {
    * @param style - Resolved style
    * @returns Estimated number of lines
    */
-  static estimateTextLines(children: ReactNode, style: any): number {
+  static estimateTextLines(children: ReactNode, _style?: any): number {
     if (!children) {
       return 1;
     }

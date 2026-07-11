@@ -1,4 +1,5 @@
 import type { ComponentType, ReactElement, ReactNode } from 'react';
+import type { DimensionValue } from 'react-native';
 import type { SkeletonConfig, ResolvedStyle } from './skeleton';
 
 /**
@@ -100,14 +101,17 @@ export interface SkeletonUtils {
   resolveStyle: (style: any) => ResolvedStyle;
 
   /**
-   * Extract dimensions from props/style
+   * Extract dimensions from a resolved style
    */
-  extractDimensions: (element: ReactElement) => { width?: number; height?: number };
+  extractDimensions: (style: ResolvedStyle) => {
+    width?: DimensionValue;
+    height?: DimensionValue;
+  };
 
   /**
    * Generate random width for natural look
    */
-  randomWidth: (min: number, max: number) => string;
+  randomWidth: (min?: number, max?: number) => string;
 }
 
 /**
@@ -121,33 +125,43 @@ export interface PluginMetadata {
 }
 
 /**
+ * Animation and color props shared by all skeleton primitives
+ */
+export interface SkeletonAnimationProps {
+  animation?: 'shimmer' | 'pulse' | 'none';
+  baseColor?: string;
+  highlightColor?: string;
+  duration?: number;
+}
+
+/**
  * Props for skeleton primitives
  */
-export interface BoxProps {
-  width?: number | string;
-  height?: number | string;
+export interface BoxProps extends SkeletonAnimationProps {
+  width?: DimensionValue;
+  height?: DimensionValue;
   borderRadius?: number;
   style?: any;
   children?: ReactNode;
 }
 
-export interface TextProps {
+export interface TextProps extends SkeletonAnimationProps {
   lines?: number;
   fontSize?: number;
   lineHeight?: number;
-  width?: number | string;
-  lastLineWidth?: number | string;
+  width?: DimensionValue;
+  lastLineWidth?: DimensionValue;
   style?: any;
 }
 
-export interface ImageProps {
-  width?: number | string;
-  height?: number | string;
+export interface ImageProps extends SkeletonAnimationProps {
+  width?: DimensionValue;
+  height?: DimensionValue;
   borderRadius?: number;
   style?: any;
 }
 
-export interface CircleProps {
+export interface CircleProps extends SkeletonAnimationProps {
   size?: number;
   style?: any;
 }
