@@ -20,13 +20,16 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
+      # Trusted Publishing (OIDC) requires a recent npm CLI.
+      - run: npm install -g npm@latest
+
       # Installs deps and builds lib via the `prepare` script.
       - run: npm install --legacy-peer-deps
 
       - run: npm run build
 
-      # Publishes under the unscoped name; prerelease versions (with a hyphen)
-      # go under the `alpha` tag so they don't become the `latest` install.
+      # Auth is via OIDC (Trusted Publisher) — no token needed. Prerelease
+      # versions (with a hyphen) go under the `alpha` tag.
       - name: Publish
         run: |
           VERSION="$(node -p "require('./package.json').version")"
@@ -35,5 +38,3 @@ jobs:
           else
             npm publish --access public --provenance
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
