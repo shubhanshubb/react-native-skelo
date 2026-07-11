@@ -1,0 +1,22 @@
+module.exports = {
+  root: true,
+  extends: ['@react-native', 'prettier'],
+  plugins: ['prettier'],
+  rules: {
+    'prettier/prettier': [
+      'error',
+      {
+        quoteProps: 'consistent',
+        singleQuote: true,
+        tabWidth: 2,
+        trailingComma: 'es5',
+        useTabs: false,
+      },
+    ],
+    'react-native/no-inline-styles': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
+  },
+};
