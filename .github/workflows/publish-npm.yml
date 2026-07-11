@@ -1,0 +1,39 @@
+name: Publish to npm
+
+# Runs when you publish a GitHub Release, or manually from the Actions tab.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # enables npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      # Installs deps and builds lib via the `prepare` script.
+      - run: npm install --legacy-peer-deps
+
+      - run: npm run build
+
+      # Publishes under the unscoped name; prerelease versions (with a hyphen)
+      # go under the `alpha` tag so they don't become the `latest` install.
+      - name: Publish
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          if [[ "$VERSION" == *-* ]]; then
+            npm publish --access public --provenance --tag alpha
+          else
+            npm publish --access public --provenance
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
