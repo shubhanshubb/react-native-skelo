@@ -52,9 +52,46 @@ export interface SkeletonProps {
   borderRadius?: number;
 
   /**
-   * Components to render
+   * Components to render.
+   *
+   * When `styles` is provided, `children` is optional — the skeleton is derived
+   * from the styles instead of the child tree.
    */
-  children: ReactNode;
+  children?: ReactNode;
+
+  /**
+   * Generate the skeleton directly from a set of styles instead of from the
+   * child element tree. Accepts a `StyleSheet.create` object (values used in
+   * definition order) or an array of styles.
+   *
+   * Because a StyleSheet has no hierarchy, the result is a vertical stack of
+   * skeleton shapes — one per style that has visual dimensions.
+   *
+   * @example
+   * ```tsx
+   * <Skeleton loading={loading} styles={styles} />
+   * ```
+   */
+  styles?: Record<string, unknown> | unknown[];
+
+  /**
+   * When using `styles`, style keys to skip (e.g. layout containers).
+   */
+  excludeStyles?: string[];
+
+  /**
+   * Deep mode: expand opaque (custom) child components into their real
+   * host-element tree via offline rendering, producing a structured skeleton
+   * without inlining host elements.
+   *
+   * Note: this renders the children offline to introspect them, so their mount
+   * effects run during expansion. Prefer it for presentational trees; guard or
+   * register plugins for effectful/provider-dependent components. Falls back to
+   * static parsing if offline rendering is unavailable or fails.
+   *
+   * @default false
+   */
+  deep?: boolean;
 
   /**
    * Enable accessibility features

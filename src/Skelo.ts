@@ -1,6 +1,12 @@
-import type { ComponentType } from 'react';
-import type { SkeletonPlugin } from './types';
+import React from 'react';
+import type { ComponentType, ReactElement } from 'react';
+import type { SkeletonConfig, SkeletonPlugin } from './types';
 import { registry } from './core/registry';
+import {
+  StyleSkeleton,
+  type StyleInput,
+} from './core/generator/StyleSkeleton';
+import { DEFAULT_CONFIG } from './constants/defaults';
 
 /**
  * Global Skelo API for plugin management
@@ -72,6 +78,25 @@ export const Skelo = {
    */
   clearPlugins(): void {
     registry.clear();
+  },
+
+  /**
+   * Generate a skeleton element directly from a set of styles.
+   *
+   * @param styles - A `StyleSheet.create` object or an array of styles
+   * @param config - Optional animation/color overrides
+   * @returns A skeleton React element
+   *
+   * @example
+   * ```tsx
+   * {loading ? Skelo.fromStyles(styles) : <Screen />}
+   * ```
+   */
+  fromStyles(styles: StyleInput, config: Partial<SkeletonConfig> = {}): ReactElement {
+    return React.createElement(StyleSkeleton, {
+      styles,
+      config: { ...DEFAULT_CONFIG, ...config },
+    });
   },
 
   /**

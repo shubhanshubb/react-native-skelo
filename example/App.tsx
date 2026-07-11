@@ -12,14 +12,12 @@ import {
 import { Skeleton, Skelo } from 'react-native-skelo';
 
 /**
- * Example app demonstrating react-native-skelo
+ * Example app demonstrating react-native-skelo.
  *
- * NOTE: Skelo generates skeletons by traversing the host-element tree
- * (View / Text / Image) it receives as children. React does not expand
- * opaque function components during that traversal, so the UI you want a
- * skeleton for must be expressed with host primitives *directly* inside
- * <Skeleton>. That's why the markup below is inlined rather than wrapped in
- * <ProfileCard /> style components.
+ * This uses `deep` mode: <ProfileScreen /> is an ordinary opaque component, yet
+ * Skelo expands it into its real host-element tree at load time and generates a
+ * structured skeleton automatically — you write your UI once and get the
+ * loading state for free.
  */
 
 const LIST_ITEMS = [
@@ -86,78 +84,12 @@ export default function App() {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {/* Profile Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Profile</Text>
-          <Skeleton loading={loading} animation={animation}>
-            <View style={styles.profileCard}>
-              <Image
-                source={{ uri: 'https://i.pravatar.cc/300?img=1' }}
-                style={styles.avatar}
-              />
-              <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>John Doe</Text>
-                <Text style={styles.profileEmail}>john.doe@example.com</Text>
-                <Text style={styles.profileBio}>
-                  Software engineer passionate about React Native and open
-                  source. Building great mobile experiences.
-                </Text>
-              </View>
-            </View>
-          </Skeleton>
-        </View>
-
-        {/* List Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>List Items</Text>
-          <Skeleton loading={loading} animation={animation}>
-            <View>
-              {LIST_ITEMS.map(item => (
-                <View key={item.id} style={styles.listItem}>
-                  <Image source={{ uri: item.image }} style={styles.thumbnail} />
-                  <View style={styles.listItemContent}>
-                    <Text style={styles.listItemTitle}>{item.title}</Text>
-                    <Text style={styles.listItemDescription}>
-                      {item.description}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </Skeleton>
-        </View>
-
-        {/* Cards Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Cards</Text>
-          <Skeleton loading={loading} animation={animation}>
-            <View>
-              <View style={styles.card}>
-                <Image
-                  source={{ uri: 'https://picsum.photos/400/200?random=4' }}
-                  style={styles.cardImage}
-                />
-                <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>Card Title</Text>
-                  <Text style={styles.cardDescription}>
-                    This is a card with an image and some text content. Perfect
-                    for showcasing articles, products, or media.
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.card}>
-                <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>Another Card</Text>
-                  <Text style={styles.cardDescription}>
-                    Cards can have different layouts and content. This one has no
-                    image.
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </Skeleton>
-        </View>
+        {/* Deep mode: wrap an opaque screen component and Skelo expands it into
+            a structured skeleton automatically — no inlining, no escape hatches.
+            This is the "write your UI once" DX. */}
+        <Skeleton loading={loading} animation={animation} deep>
+          <ProfileScreen />
+        </Skeleton>
 
         {/* Footer */}
         <View style={styles.footer}>
@@ -167,6 +99,77 @@ export default function App() {
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+/**
+ * A normal, opaque screen component. Skelo introspects it in `deep` mode —
+ * nothing here is aware of skeletons.
+ */
+function ProfileScreen() {
+  return (
+    <>
+      {/* Profile Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Profile</Text>
+        <View style={styles.profileCard}>
+          <Image
+            source={{ uri: 'https://i.pravatar.cc/300?img=1' }}
+            style={styles.avatar}
+          />
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>john.doe@example.com</Text>
+            <Text style={styles.profileBio}>
+              Software engineer passionate about React Native and open source.
+              Building great mobile experiences.
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* List Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>List Items</Text>
+        {LIST_ITEMS.map(item => (
+          <View key={item.id} style={styles.listItem}>
+            <Image source={{ uri: item.image }} style={styles.thumbnail} />
+            <View style={styles.listItemContent}>
+              <Text style={styles.listItemTitle}>{item.title}</Text>
+              <Text style={styles.listItemDescription}>{item.description}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* Cards Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Cards</Text>
+        <View style={styles.card}>
+          <Image
+            source={{ uri: 'https://picsum.photos/400/200?random=4' }}
+            style={styles.cardImage}
+          />
+          <View style={styles.cardContent}>
+            <Text style={styles.cardTitle}>Card Title</Text>
+            <Text style={styles.cardDescription}>
+              This is a card with an image and some text content. Perfect for
+              showcasing articles, products, or media.
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardTitle}>Another Card</Text>
+            <Text style={styles.cardDescription}>
+              Cards can have different layouts and content. This one has no
+              image.
+            </Text>
+          </View>
+        </View>
+      </View>
+    </>
   );
 }
 

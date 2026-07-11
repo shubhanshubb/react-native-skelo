@@ -14,10 +14,10 @@
   "dependencies": {
     "react": "19.2.3",
     "react-native": "0.86.0",
-    "react-native-reanimated": "^4.5.1",
-    "react-native-worklets": "^0.10.2",
     "react-native-linear-gradient": "^2.8.3",
-    "react-native-skelo": "file:../"
+    "react-native-reanimated": "^4.5.1",
+    "react-native-skelo": "file:../",
+    "react-native-worklets": "^0.10.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
@@ -32,6 +32,7 @@
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "prettier": "^3.4.2",
+    "react-test-renderer": "^19.2.3",
     "typescript": "^5.7.2"
   },
   "engines": {

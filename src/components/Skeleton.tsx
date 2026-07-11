@@ -2,6 +2,9 @@ import React, { useMemo } from 'react';
 import type { SkeletonProps } from '../types';
 import { Parser } from '../core/parser';
 import { SkeletonRenderer } from './SkeletonRenderer';
+import { SkeletonIgnore } from './SkeletonIgnore';
+import { StyleSkeleton } from '../core/generator/StyleSkeleton';
+import { expandToComponentNodes } from '../core/parser/expandOffline';
 import { DEFAULT_CONFIG } from '../constants/defaults';
 
 /**
@@ -35,6 +38,9 @@ import { DEFAULT_CONFIG } from '../constants/defaults';
 export function Skeleton({
   loading,
   children,
+  styles,
+  excludeStyles,
+  deep = false,
   animation = DEFAULT_CONFIG.animation,
   duration = DEFAULT_CONFIG.duration,
   baseColor = DEFAULT_CONFIG.baseColor,
@@ -46,9 +52,9 @@ export function Skeleton({
 }: SkeletonProps) {
   // Parse component tree and generate skeleton.
   // Hooks must run unconditionally (rules of hooks), but parsing stays lazy:
-  // we skip the work entirely when not loading.
+  // we skip the work entirely when not loading or in styles-driven mode.
   const skeletonTree = useMemo(() => {
-    if (!loading) {
+    if (!loading || styles) {
       return [];
     }
 
@@ -57,6 +63,20 @@ export function Skeleton({
     }
 
     try {
+      // Deep mode: expand opaque components into their real host tree by
+      // rendering them offline. Falls back to static parsing on failure.
+      if (deep) {
+        const expanded = expandToComponentNodes(<>{children}</>);
+        if (expanded && expanded.length > 0) {
+          return expanded;
+        }
+        if (__DEV__) {
+          console.warn(
+            '[Skelo] deep expansion returned nothing; falling back to static parsing.'
+          );
+        }
+      }
+
       const parsed = Parser.parse(children);
 
       if (__DEV__ && debug) {
@@ -81,7 +101,7 @@ export function Skeleton({
       }
       return [];
     }
-  }, [loading, children, debug]);
+  }, [loading, styles, deep, children, debug]);
 
   // Create skeleton config
   const config = useMemo(
@@ -95,9 +115,17 @@ export function Skeleton({
     [animation, duration, baseColor, highlightColor, borderRadius]
   );
 
-  // If not loading, render children directly
+  // If not loading, render the real children directly.
   if (!loading) {
     return <>{children}</>;
+  }
+
+  // Styles-driven mode: derive the skeleton from the provided styles instead of
+  // introspecting the child tree (useful when children are opaque components).
+  if (styles) {
+    return (
+      <StyleSkeleton styles={styles} config={config} exclude={excludeStyles} />
+    );
   }
 
   return (
@@ -112,3 +140,9 @@ export function Skeleton({
 }
 
 Skeleton.displayName = 'Skeleton';
+
+/**
+ * Escape hatch to keep children as real content inside a loading `<Skeleton>`.
+ * @see SkeletonIgnore
+ */
+Skeleton.Ignore = SkeletonIgnore;

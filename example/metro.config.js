@@ -4,9 +4,12 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const pak = require('../package.json');
 
-const modules = Object.keys({
-  ...pak.peerDependencies,
-});
+const modules = [
+  ...Object.keys(pak.peerDependencies),
+  // Deduped so the library's offline-render engine uses the app's matching
+  // React copy (react-test-renderer must match the app's react version).
+  'react-test-renderer',
+];
 
 // Regex-escape a filesystem path for use inside a RegExp.
 const escapeRegExp = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

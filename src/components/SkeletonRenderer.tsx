@@ -79,6 +79,11 @@ export function SkeletonRenderer({
       console.log(`[Skelo] Rendering node: ${node.type}`, node);
     }
 
+    // Skeleton.Ignore escape hatch: render the real children untouched.
+    if (node.type === 'Skeleton.Ignore') {
+      return <React.Fragment key={index}>{node.props?.children}</React.Fragment>;
+    }
+
     // Check for registered plugin
     const plugin = registry.getPluginByName(node.type);
     if (plugin) {

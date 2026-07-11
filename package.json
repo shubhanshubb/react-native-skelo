@@ -70,7 +70,13 @@
     "react": "*",
     "react-native": "*",
     "react-native-reanimated": ">=3.0.0",
-    "react-native-linear-gradient": ">=2.8.0"
+    "react-native-linear-gradient": ">=2.8.0",
+    "react-test-renderer": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-test-renderer": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^18.4.3",

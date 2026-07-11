@@ -8,6 +8,11 @@
 
 // Main component
 export { Skeleton } from './components/Skeleton';
+export { SkeletonIgnore } from './components/SkeletonIgnore';
+export { withSkeleton } from './components/withSkeleton';
+export type { WithSkeletonOptions } from './components/withSkeleton';
+export { StyleSkeleton } from './core/generator/StyleSkeleton';
+export type { StyleInput } from './core/generator/StyleSkeleton';
 
 // Global API
 export { Skelo } from './Skelo';
