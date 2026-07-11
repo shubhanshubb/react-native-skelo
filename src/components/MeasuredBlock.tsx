@@ -41,9 +41,7 @@ export function MeasuredBlock({ children, config }: MeasuredBlockProps) {
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
     setSize(prev =>
-      prev && prev.width === width && prev.height === height
-        ? prev
-        : { width, height }
+      prev && prev.width === width && prev.height === height ? prev : { width, height }
     );
   };
 

@@ -33,9 +33,7 @@ export class SkeletonRegistry {
     // Check for conflicts
     if (this.plugins.has(plugin.component)) {
       if (__DEV__) {
-        console.warn(
-          `[Skelo] Plugin "${plugin.name}" is overriding existing plugin for component`
-        );
+        console.warn(`[Skelo] Plugin "${plugin.name}" is overriding existing plugin for component`);
       }
     }
 

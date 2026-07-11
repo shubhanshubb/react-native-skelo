@@ -1,9 +1,4 @@
-export type {
-  SkeletonProps,
-  SkeletonConfig,
-  ResolvedStyle,
-  ComponentNode,
-} from './skeleton';
+export type { SkeletonProps, SkeletonConfig, ResolvedStyle, ComponentNode } from './skeleton';
 
 export type {
   SkeletonPlugin,

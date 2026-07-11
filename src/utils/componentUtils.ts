@@ -117,7 +117,7 @@ export function isFragment(element: ReactElement): boolean {
 export function flattenChildren(children: ReactNode): ReactNode[] {
   const result: ReactNode[] = [];
 
-  React.Children.forEach(children, (child) => {
+  React.Children.forEach(children, child => {
     if (!isValidElement(child)) {
       result.push(child);
       return;

@@ -1,6 +1,6 @@
 {
   "name": "react-native-skelo",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.0",
   "description": "Automatic skeleton loading for React Native. Write your UI once, Skelo builds the loading state automatically.",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -24,6 +24,7 @@
     "prepare": "bob build",
     "prepublishOnly": "bob build",
     "publish:npm": "npm publish --access public",
+    "publish:alpha": "npm publish --tag alpha --access public",
     "publish:git": "git push origin HEAD --tags",
     "release": "npm run build && npm publish --access public && git push origin HEAD --tags",
     "clean": "del-cli lib"
@@ -69,12 +70,12 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated": ">=3.0.0",
     "react-native-linear-gradient": ">=2.8.0",
-    "react-test-renderer": "*"
+    "react-native-reanimated": ">=3.0.0",
+    "react-reconciler": ">=0.29.0"
   },
   "peerDependenciesMeta": {
-    "react-test-renderer": {
+    "react-reconciler": {
       "optional": true
     }
   },
@@ -96,6 +97,7 @@
     "react-native-builder-bob": "^0.23.2",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-reanimated": "^3.6.1",
+    "react-reconciler": "^0.29.2",
     "react-test-renderer": "18.2.0",
     "release-it": "^17.0.1",
     "typescript": "^5.3.3"

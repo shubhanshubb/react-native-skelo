@@ -14,19 +14,12 @@ describe('SkeletonCircle', () => {
   });
 
   it('should accept animation prop', () => {
-    const { toJSON } = render(
-      <SkeletonCircle animation="pulse" />
-    );
+    const { toJSON } = render(<SkeletonCircle animation="pulse" />);
     expect(toJSON()).toBeTruthy();
   });
 
   it('should accept custom colors', () => {
-    const { toJSON } = render(
-      <SkeletonCircle
-        baseColor="#f0f0f0"
-        highlightColor="#ffffff"
-      />
-    );
+    const { toJSON } = render(<SkeletonCircle baseColor="#f0f0f0" highlightColor="#ffffff" />);
     expect(toJSON()).toBeTruthy();
   });
 });

@@ -18,7 +18,7 @@ export class Parser {
     const flattened = flattenChildren(children);
     const nodes: ComponentNode[] = [];
 
-    flattened.forEach((child) => {
+    flattened.forEach(child => {
       if (!isValidElement(child)) {
         // Skip non-element children (strings, numbers, null, etc.)
         return;
@@ -70,7 +70,7 @@ export class Parser {
 
     // Convert children to string
     const text = React.Children.toArray(children)
-      .filter((child) => typeof child === 'string' || typeof child === 'number')
+      .filter(child => typeof child === 'string' || typeof child === 'number')
       .join('');
 
     if (!text) {

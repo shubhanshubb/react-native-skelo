@@ -17,7 +17,8 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-reanimated": "^4.5.1",
     "react-native-skelo": "file:../",
-    "react-native-worklets": "^0.10.2"
+    "react-native-worklets": "^0.10.2",
+    "react-reconciler": "^0.31.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",

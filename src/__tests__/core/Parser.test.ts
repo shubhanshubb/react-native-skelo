@@ -23,11 +23,7 @@ describe('Parser', () => {
   });
 
   it('should parse nested components', () => {
-    const element = React.createElement(
-      View,
-      {},
-      React.createElement(Text, {}, 'Child')
-    );
+    const element = React.createElement(View, {}, React.createElement(Text, {}, 'Child'));
     const result = Parser.parse(element);
 
     expect(result).toHaveLength(1);

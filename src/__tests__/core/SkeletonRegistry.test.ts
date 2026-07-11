@@ -61,9 +61,7 @@ describe('SkeletonRegistry', () => {
   it('should throw error for invalid plugin (no name)', () => {
     const invalidPlugin = { ...mockPlugin, name: '' };
 
-    expect(() => registry.register(invalidPlugin)).toThrow(
-      '[Skelo] Plugin must have a name'
-    );
+    expect(() => registry.register(invalidPlugin)).toThrow('[Skelo] Plugin must have a name');
   });
 
   it('should throw error for invalid plugin (no component)', () => {

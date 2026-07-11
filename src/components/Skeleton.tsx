@@ -71,9 +71,7 @@ export function Skeleton({
           return expanded;
         }
         if (__DEV__) {
-          console.warn(
-            '[Skelo] deep expansion returned nothing; falling back to static parsing.'
-          );
+          console.warn('[Skelo] deep expansion returned nothing; falling back to static parsing.');
         }
       }
 
@@ -88,10 +86,7 @@ export function Skeleton({
             style: node.style,
             children: summarize(node.children),
           }));
-        console.log(
-          '[Skelo] Parsed tree:',
-          JSON.stringify(summarize(parsed), null, 2)
-        );
+        console.log('[Skelo] Parsed tree:', JSON.stringify(summarize(parsed), null, 2));
       }
 
       return parsed;
@@ -123,9 +118,7 @@ export function Skeleton({
   // Styles-driven mode: derive the skeleton from the provided styles instead of
   // introspecting the child tree (useful when children are opaque components).
   if (styles) {
-    return (
-      <StyleSkeleton styles={styles} config={config} exclude={excludeStyles} />
-    );
+    return <StyleSkeleton styles={styles} config={config} exclude={excludeStyles} />;
   }
 
   return (

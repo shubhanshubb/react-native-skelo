@@ -7,8 +7,8 @@ const pak = require('../package.json');
 const modules = [
   ...Object.keys(pak.peerDependencies),
   // Deduped so the library's offline-render engine uses the app's matching
-  // React copy (react-test-renderer must match the app's react version).
-  'react-test-renderer',
+  // React copy (react-reconciler must match the app's react version).
+  'react-reconciler',
 ];
 
 // Regex-escape a filesystem path for use inside a RegExp.

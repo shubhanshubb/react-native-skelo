@@ -31,9 +31,10 @@ export function resolveStyle(style: any): ResolvedStyle {
  * @param style - Resolved style object
  * @returns Object with width and height (if present)
  */
-export function extractDimensions(
-  style: ResolvedStyle
-): { width?: DimensionValue; height?: DimensionValue } {
+export function extractDimensions(style: ResolvedStyle): {
+  width?: DimensionValue;
+  height?: DimensionValue;
+} {
   return {
     width: style.width,
     height: style.height,

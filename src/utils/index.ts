@@ -1,9 +1,4 @@
-export {
-  resolveStyle,
-  extractDimensions,
-  isPercentage,
-  percentageToNumber,
-} from './styleUtils';
+export { resolveStyle, extractDimensions, isPercentage, percentageToNumber } from './styleUtils';
 
 export {
   getComponentName,

@@ -46,10 +46,7 @@ export interface SkeletonPlugin<P = any> {
 /**
  * Strategy function signature
  */
-export type SkeletonStrategy<P = any> = (
-  props: P,
-  context: SkeletonContext
-) => ReactElement | null;
+export type SkeletonStrategy<P = any> = (props: P, context: SkeletonContext) => ReactElement | null;
 
 /**
  * Context provided to plugin strategies

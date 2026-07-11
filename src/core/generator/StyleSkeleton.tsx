@@ -2,11 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { DimensionValue } from 'react-native';
 import type { SkeletonConfig } from '../../types';
-import {
-  SkeletonBox,
-  SkeletonText,
-  SkeletonCircle,
-} from '../../components/primitives';
+import { SkeletonBox, SkeletonText, SkeletonCircle } from '../../components/primitives';
 
 /**
  * A single named style, or an ordered list of styles, or a whole StyleSheet
@@ -126,9 +122,7 @@ function styleToSkeleton(
 export function StyleSkeleton({ styles, config, exclude }: StyleSkeletonProps) {
   const entries: Array<[string | number, unknown]> = Array.isArray(styles)
     ? styles.map((s, i) => [i, s])
-    : Object.entries(styles || {}).filter(
-        ([name]) => !exclude || !exclude.includes(name)
-      );
+    : Object.entries(styles || {}).filter(([name]) => !exclude || !exclude.includes(name));
 
   const nodes = entries
     .map(([key, style]) => styleToSkeleton(style, key, config))

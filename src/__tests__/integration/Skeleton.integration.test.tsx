@@ -21,8 +21,7 @@ describe('Skeleton Integration Tests', () => {
         </View>
         <View style={styles.content}>
           <Text style={styles.bio}>
-            This is a bio text that spans multiple lines and provides
-            information about the user.
+            This is a bio text that spans multiple lines and provides information about the user.
           </Text>
         </View>
       </View>
@@ -40,7 +39,7 @@ describe('Skeleton Integration Tests', () => {
   it('should handle list-like structures', () => {
     const ListScreen = () => (
       <View>
-        {[1, 2, 3].map((item) => (
+        {[1, 2, 3].map(item => (
           <View key={item} style={styles.listItem}>
             <Image source={{ uri: 'thumbnail.jpg' }} style={styles.thumbnail} />
             <View style={styles.listContent}>

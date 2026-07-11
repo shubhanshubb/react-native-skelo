@@ -9,33 +9,22 @@ describe('SkeletonImage', () => {
   });
 
   it('should render with custom dimensions', () => {
-    const { toJSON } = render(
-      <SkeletonImage width={200} height={150} />
-    );
+    const { toJSON } = render(<SkeletonImage width={200} height={150} />);
     expect(toJSON()).toBeTruthy();
   });
 
   it('should accept border radius', () => {
-    const { toJSON } = render(
-      <SkeletonImage width={100} height={100} borderRadius={50} />
-    );
+    const { toJSON } = render(<SkeletonImage width={100} height={100} borderRadius={50} />);
     expect(toJSON()).toBeTruthy();
   });
 
   it('should accept animation prop', () => {
-    const { toJSON } = render(
-      <SkeletonImage animation="pulse" />
-    );
+    const { toJSON } = render(<SkeletonImage animation="pulse" />);
     expect(toJSON()).toBeTruthy();
   });
 
   it('should accept custom colors', () => {
-    const { toJSON } = render(
-      <SkeletonImage
-        baseColor="#f0f0f0"
-        highlightColor="#ffffff"
-      />
-    );
+    const { toJSON } = render(<SkeletonImage baseColor="#f0f0f0" highlightColor="#ffffff" />);
     expect(toJSON()).toBeTruthy();
   });
 });

@@ -50,11 +50,7 @@ describe('Skeleton', () => {
 
   it('should accept custom colors', () => {
     const { getByLabelText } = render(
-      <Skeleton
-        loading={true}
-        baseColor="#f0f0f0"
-        highlightColor="#ffffff"
-      >
+      <Skeleton loading={true} baseColor="#f0f0f0" highlightColor="#ffffff">
         <Text>Content</Text>
       </Skeleton>
     );

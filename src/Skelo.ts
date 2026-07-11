@@ -2,10 +2,7 @@ import React from 'react';
 import type { ComponentType, ReactElement } from 'react';
 import type { SkeletonConfig, SkeletonPlugin } from './types';
 import { registry } from './core/registry';
-import {
-  StyleSkeleton,
-  type StyleInput,
-} from './core/generator/StyleSkeleton';
+import { StyleSkeleton, type StyleInput } from './core/generator/StyleSkeleton';
 import { DEFAULT_CONFIG } from './constants/defaults';
 
 /**

@@ -104,11 +104,7 @@ export function ShimmerAnimation({
 
     // Calculate shimmer position
     // Interpolate from -100% to 100% to create left-to-right sweep
-    const translateX = interpolate(
-      progress.value,
-      [0, 1],
-      [-1, 1]
-    );
+    const translateX = interpolate(progress.value, [0, 1], [-1, 1]);
 
     return {
       transform: [{ translateX: translateX * (typeof width === 'number' ? width : 200) }],
@@ -149,12 +145,7 @@ export function ShimmerAnimation({
           ]}
         >
           <LinearGradient
-            colors={[
-              baseColor,
-              highlightColor,
-              highlightColor,
-              baseColor,
-            ]}
+            colors={[baseColor, highlightColor, highlightColor, baseColor]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}

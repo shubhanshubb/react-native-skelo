@@ -93,7 +93,7 @@ export function SkeletonRenderer({
             {plugin.strategy(node.props, {
               config,
               theme: 'light', // TODO: Add theme detection
-              parseChildren: (children) => {
+              parseChildren: children => {
                 const parsed =
                   typeof children === 'object' && children !== null
                     ? [children as unknown as ComponentNode]

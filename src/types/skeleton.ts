@@ -173,12 +173,7 @@ export interface ResolvedStyle {
   flexDirection?: 'row' | 'column';
   alignItems?: FlexAlignType;
   justifyContent?:
-    | 'flex-start'
-    | 'flex-end'
-    | 'center'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly';
+    'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
 }
 
 /**
