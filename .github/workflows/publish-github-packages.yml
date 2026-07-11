@@ -1,0 +1,44 @@
+name: Publish to GitHub Packages
+
+# Runs when you publish a GitHub Release, or manually from the Actions tab.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@shubhanshubb'
+
+      # Installs deps and builds lib via the `prepare` script.
+      - run: npm install --legacy-peer-deps
+
+      - run: npm run build
+
+      # GitHub Packages requires a scoped name matching the repo owner, and the
+      # publish must target its registry (overrides the npmjs publishConfig).
+      - run: npm pkg set name=@shubhanshubb/react-native-skelo
+      - run: npm pkg set publishConfig.registry=https://npm.pkg.github.com
+
+      # Publish; prerelease versions (with a hyphen) go under the `alpha` tag.
+      - name: Publish
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          if [[ "$VERSION" == *-* ]]; then
+            npm publish --tag alpha
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
