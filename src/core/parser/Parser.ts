@@ -52,6 +52,7 @@ export class Parser {
       props,
       style,
       children,
+      element,
     };
   }
 

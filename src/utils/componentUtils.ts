@@ -1,8 +1,49 @@
 import React, { isValidElement } from 'react';
 import type { ReactElement, ReactNode } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  ScrollView,
+  SafeAreaView,
+  FlatList,
+  SectionList,
+  VirtualizedList,
+  TouchableOpacity,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  Pressable,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 // Re-exported so consumers can access it from the skelo utils surface
 export { isValidElement };
+
+/**
+ * Reference map of React Native host components to their canonical names.
+ *
+ * Modern RN components (View/Text/Image/...) are `forwardRef`/`memo` objects,
+ * not plain functions or strings, so name/displayName sniffing is unreliable.
+ * Identifying them by reference is exact. This works across the library/app
+ * module boundary because Metro resolves a single `react-native` instance.
+ */
+const RN_COMPONENT_NAMES = new Map<unknown, string>([
+  [View, 'View'],
+  [Text, 'Text'],
+  [Image, 'Image'],
+  [ImageBackground, 'ImageBackground'],
+  [ScrollView, 'ScrollView'],
+  [SafeAreaView, 'SafeAreaView'],
+  [FlatList, 'FlatList'],
+  [SectionList, 'SectionList'],
+  [VirtualizedList, 'VirtualizedList'],
+  [TouchableOpacity, 'TouchableOpacity'],
+  [TouchableHighlight, 'TouchableHighlight'],
+  [TouchableWithoutFeedback, 'TouchableWithoutFeedback'],
+  [Pressable, 'Pressable'],
+  [KeyboardAvoidingView, 'KeyboardAvoidingView'],
+]);
 
 /**
  * Get component display name or type name
@@ -11,15 +52,47 @@ export { isValidElement };
  * @returns Component name as string
  */
 export function getComponentName(element: ReactElement): string {
-  const type = element.type;
+  const type: unknown = element.type;
 
+  if (type === React.Fragment) {
+    return 'Fragment';
+  }
+
+  // Exact identification of RN host components (forwardRef/memo objects).
+  const mapped = RN_COMPONENT_NAMES.get(type);
+  if (mapped) {
+    return mapped;
+  }
+
+  // Intrinsic host string (e.g. web/DOM or raw native tags).
   if (typeof type === 'string') {
     return type;
   }
 
+  // Plain function/class components.
   if (typeof type === 'function') {
     const fn = type as { displayName?: string; name?: string };
     return fn.displayName || fn.name || 'Anonymous';
+  }
+
+  // forwardRef / memo wrappers: unwrap to find a usable name.
+  if (typeof type === 'object' && type !== null) {
+    const obj = type as {
+      displayName?: string;
+      render?: { displayName?: string; name?: string };
+      type?: unknown;
+    };
+    if (obj.displayName) {
+      return obj.displayName;
+    }
+    if (obj.render) {
+      return obj.render.displayName || obj.render.name || 'Anonymous';
+    }
+    // memo(Component) nests the real component under `.type`.
+    if (obj.type) {
+      return getComponentName({ type: obj.type } as ReactElement);
+    }
+    return 'Anonymous';
   }
 
   return 'Unknown';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 import {
   isValidElement,
   isFragment,
@@ -44,6 +44,14 @@ describe('componentUtils', () => {
     it('should get name from Text component', () => {
       const element = <Text />;
       expect(getComponentName(element)).toBe('Text');
+    });
+
+    it('should identify host components by reference (forwardRef/memo safe)', () => {
+      // Regression: modern RN host components are forwardRef/memo objects, not
+      // functions/strings. They must still resolve to their canonical names so
+      // the parser treats them as host elements rather than opaque components.
+      expect(getComponentName(<Image source={{ uri: 'x' }} />)).toBe('Image');
+      expect(getComponentName(<ScrollView />)).toBe('ScrollView');
     });
 
     it('should return Unknown for anonymous components', () => {

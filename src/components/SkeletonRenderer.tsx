@@ -3,8 +3,30 @@ import { View } from 'react-native';
 import type { ComponentNode, SkeletonConfig } from '../types';
 import { registry } from '../core/registry';
 import { SkeletonBox, SkeletonText, SkeletonImage, SkeletonCircle } from './primitives';
+import { MeasuredBlock } from './MeasuredBlock';
 import { resolveStyle, extractDimensions } from '../utils/styleUtils';
 import { randomWidth } from '../utils/componentUtils';
+
+/**
+ * Host component types the renderer knows how to skeletonize directly.
+ * Anything else is treated as an opaque component and measured at runtime.
+ */
+const HOST_CONTAINER_TYPES = new Set([
+  'View',
+  'ScrollView',
+  'SafeAreaView',
+  'KeyboardAvoidingView',
+  'TouchableOpacity',
+  'TouchableHighlight',
+  'TouchableWithoutFeedback',
+  'TouchableNativeFeedback',
+  'Pressable',
+  'Fragment',
+]);
+const HOST_LIST_TYPES = new Set(['FlatList', 'SectionList', 'VirtualizedList']);
+
+// Track which opaque component names we've already warned about (dev only).
+const warnedOpaqueTypes = new Set<string>();
 
 interface SkeletonRendererProps {
   /**
@@ -94,29 +116,56 @@ export function SkeletonRenderer({
       }
     }
 
-    // Built-in component handling
+    // Built-in host component handling
     switch (node.type) {
-      case 'View':
-        return renderView(node, index);
-
       case 'Text':
         return renderText(node, index);
 
       case 'Image':
         return renderImage(node, index);
-
-      case 'ScrollView':
-      case 'FlatList':
-      case 'SectionList':
-        return renderScrollableView(node, index);
-
-      default:
-        // Unknown component - try to render as View
-        if (__DEV__ && debug) {
-          console.warn(`[Skelo] Unknown component type: ${node.type}, rendering as View`);
-        }
-        return renderView(node, index);
     }
+
+    if (HOST_LIST_TYPES.has(node.type) || node.type === 'ScrollView') {
+      return renderScrollableView(node, index);
+    }
+
+    if (HOST_CONTAINER_TYPES.has(node.type)) {
+      return renderView(node, index);
+    }
+
+    // Opaque component: the parser can't see inside it (a user-defined
+    // function/class component). Render it hidden and measure its real size,
+    // then overlay a size-matched shimmer.
+    return renderOpaque(node, index);
+  };
+
+  /**
+   * Render an opaque (non-host) component via runtime measurement.
+   */
+  const renderOpaque = (node: ComponentNode, index: number): React.ReactElement => {
+    if (__DEV__ && !warnedOpaqueTypes.has(node.type)) {
+      warnedOpaqueTypes.add(node.type);
+      console.warn(
+        `[Skelo] "${node.type}" is a custom component, so Skelo can't inspect ` +
+          `its internal View/Text/Image structure. It will be measured and ` +
+          `shown as a single size-matched skeleton block.\n` +
+          `For a structured skeleton, either compose "${node.type}" from host ` +
+          `elements directly inside <Skeleton>, register a plugin via ` +
+          `Skelo.register(${node.type}, ...), or provide a manual skeleton.`
+      );
+    }
+
+    // If we still have the original element, measure it. Otherwise fall back
+    // to a container/box render.
+    if (node.element) {
+      return (
+        <MeasuredBlock key={index} config={config}>
+          {node.element}
+        </MeasuredBlock>
+      );
+    }
+
+    return renderView(node, index);
   };
 
   /**

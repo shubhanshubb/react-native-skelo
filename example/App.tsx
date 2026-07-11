@@ -14,38 +14,56 @@ import { Skeleton, Skelo } from 'react-native-skelo';
 /**
  * Example app demonstrating react-native-skelo
  *
- * Shows various skeleton loading patterns:
- * - Profile screen
- * - List items
- * - Cards
- * - Custom components
+ * NOTE: Skelo generates skeletons by traversing the host-element tree
+ * (View / Text / Image) it receives as children. React does not expand
+ * opaque function components during that traversal, so the UI you want a
+ * skeleton for must be expressed with host primitives *directly* inside
+ * <Skeleton>. That's why the markup below is inlined rather than wrapped in
+ * <ProfileCard /> style components.
  */
+
+const LIST_ITEMS = [
+  {
+    id: 1,
+    title: 'First Item',
+    description: 'This is the first item in the list',
+    image: 'https://picsum.photos/100/100?random=1',
+  },
+  {
+    id: 2,
+    title: 'Second Item',
+    description: 'This is the second item in the list',
+    image: 'https://picsum.photos/100/100?random=2',
+  },
+  {
+    id: 3,
+    title: 'Third Item',
+    description: 'This is the third item in the list',
+    image: 'https://picsum.photos/100/100?random=3',
+  },
+];
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const [animation, setAnimation] = useState<'shimmer' | 'pulse' | 'none'>('shimmer');
+  const [animation, setAnimation] = useState<'shimmer' | 'pulse' | 'none'>(
+    'shimmer'
+  );
 
   // Simulate data loading
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-
+    if (!loading) {
+      return;
+    }
+    const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
   }, [loading]);
 
-  const reloadData = () => {
-    setLoading(true);
-  };
+  const reloadData = () => setLoading(true);
 
   const toggleAnimation = () => {
-    if (animation === 'shimmer') {
-      setAnimation('pulse');
-    } else if (animation === 'pulse') {
-      setAnimation('none');
-    } else {
-      setAnimation('shimmer');
-    }
+    setAnimation(prev =>
+      prev === 'shimmer' ? 'pulse' : prev === 'pulse' ? 'none' : 'shimmer'
+    );
   };
 
   return (
@@ -72,7 +90,20 @@ export default function App() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Profile</Text>
           <Skeleton loading={loading} animation={animation}>
-            <ProfileCard />
+            <View style={styles.profileCard}>
+              <Image
+                source={{ uri: 'https://i.pravatar.cc/300?img=1' }}
+                style={styles.avatar}
+              />
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName}>John Doe</Text>
+                <Text style={styles.profileEmail}>john.doe@example.com</Text>
+                <Text style={styles.profileBio}>
+                  Software engineer passionate about React Native and open
+                  source. Building great mobile experiences.
+                </Text>
+              </View>
+            </View>
           </Skeleton>
         </View>
 
@@ -80,7 +111,19 @@ export default function App() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>List Items</Text>
           <Skeleton loading={loading} animation={animation}>
-            <ListItems />
+            <View>
+              {LIST_ITEMS.map(item => (
+                <View key={item.id} style={styles.listItem}>
+                  <Image source={{ uri: item.image }} style={styles.thumbnail} />
+                  <View style={styles.listItemContent}>
+                    <Text style={styles.listItemTitle}>{item.title}</Text>
+                    <Text style={styles.listItemDescription}>
+                      {item.description}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
           </Skeleton>
         </View>
 
@@ -88,7 +131,31 @@ export default function App() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Cards</Text>
           <Skeleton loading={loading} animation={animation}>
-            <Cards />
+            <View>
+              <View style={styles.card}>
+                <Image
+                  source={{ uri: 'https://picsum.photos/400/200?random=4' }}
+                  style={styles.cardImage}
+                />
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>Card Title</Text>
+                  <Text style={styles.cardDescription}>
+                    This is a card with an image and some text content. Perfect
+                    for showcasing articles, products, or media.
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.card}>
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>Another Card</Text>
+                  <Text style={styles.cardDescription}>
+                    Cards can have different layouts and content. This one has no
+                    image.
+                  </Text>
+                </View>
+              </View>
+            </View>
           </Skeleton>
         </View>
 
@@ -100,100 +167,6 @@ export default function App() {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
-}
-
-/**
- * Profile Card Component
- */
-function ProfileCard() {
-  return (
-    <View style={styles.profileCard}>
-      <Image
-        source={{ uri: 'https://i.pravatar.cc/300?img=1' }}
-        style={styles.avatar}
-      />
-      <View style={styles.profileInfo}>
-        <Text style={styles.profileName}>John Doe</Text>
-        <Text style={styles.profileEmail}>john.doe@example.com</Text>
-        <Text style={styles.profileBio}>
-          Software engineer passionate about React Native and open source.
-          Building great mobile experiences.
-        </Text>
-      </View>
-    </View>
-  );
-}
-
-/**
- * List Items Component
- */
-function ListItems() {
-  const items = [
-    {
-      id: 1,
-      title: 'First Item',
-      description: 'This is the first item in the list',
-      image: 'https://picsum.photos/100/100?random=1',
-    },
-    {
-      id: 2,
-      title: 'Second Item',
-      description: 'This is the second item in the list',
-      image: 'https://picsum.photos/100/100?random=2',
-    },
-    {
-      id: 3,
-      title: 'Third Item',
-      description: 'This is the third item in the list',
-      image: 'https://picsum.photos/100/100?random=3',
-    },
-  ];
-
-  return (
-    <View>
-      {items.map((item) => (
-        <View key={item.id} style={styles.listItem}>
-          <Image source={{ uri: item.image }} style={styles.thumbnail} />
-          <View style={styles.listItemContent}>
-            <Text style={styles.listItemTitle}>{item.title}</Text>
-            <Text style={styles.listItemDescription}>{item.description}</Text>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-/**
- * Cards Component
- */
-function Cards() {
-  return (
-    <View>
-      <View style={styles.card}>
-        <Image
-          source={{ uri: 'https://picsum.photos/400/200?random=4' }}
-          style={styles.cardImage}
-        />
-        <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>Card Title</Text>
-          <Text style={styles.cardDescription}>
-            This is a card with an image and some text content. Perfect for
-            showcasing articles, products, or media.
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>Another Card</Text>
-          <Text style={styles.cardDescription}>
-            Cards can have different layouts and content. This one has no image.
-          </Text>
-        </View>
-      </View>
-    </View>
   );
 }
 

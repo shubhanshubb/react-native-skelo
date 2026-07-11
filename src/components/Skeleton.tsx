@@ -60,7 +60,18 @@ export function Skeleton({
       const parsed = Parser.parse(children);
 
       if (__DEV__ && debug) {
-        console.log('[Skelo] Parsed tree:', JSON.stringify(parsed, null, 2));
+        // Log a lightweight summary: the raw nodes hold React elements
+        // (`element`) and arbitrary props that aren't safely serializable.
+        const summarize = (nodes: typeof parsed): unknown =>
+          nodes.map(node => ({
+            type: node.type,
+            style: node.style,
+            children: summarize(node.children),
+          }));
+        console.log(
+          '[Skelo] Parsed tree:',
+          JSON.stringify(summarize(parsed), null, 2)
+        );
       }
 
       return parsed;

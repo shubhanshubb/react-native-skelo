@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import type { DimensionValue, FlexAlignType } from 'react-native';
 
 /**
@@ -152,4 +152,12 @@ export interface ComponentNode {
   props: any;
   style: ResolvedStyle;
   children: ComponentNode[];
+  /**
+   * The original React element this node was parsed from.
+   *
+   * Retained so the renderer can fall back to rendering-and-measuring the
+   * real element when it is an opaque (non-host) component the parser can't
+   * introspect. Excluded from debug serialization.
+   */
+  element?: ReactElement;
 }
