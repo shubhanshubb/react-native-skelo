@@ -84,10 +84,12 @@ export interface SkeletonProps {
    * host-element tree via offline rendering, producing a structured skeleton
    * without inlining host elements.
    *
-   * Note: this renders the children offline to introspect them, so their mount
-   * effects run during expansion. Prefer it for presentational trees; guard or
-   * register plugins for effectful/provider-dependent components. Falls back to
-   * static parsing if offline rendering is unavailable or fails.
+   * @experimental Renders the children offline to introspect them, so their
+   * mount effects run during expansion and they render outside your app's
+   * providers (navigation/theme/redux). Best for presentational trees; guard
+   * effectful/context-dependent screens or register a plugin for them. Falls
+   * back to static parsing if offline rendering is unavailable or fails.
+   * Requires `react-reconciler` to be installed.
    *
    * @default false
    */

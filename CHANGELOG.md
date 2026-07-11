@@ -1,0 +1,35 @@
+# Changelog
+
+All notable changes to this project are documented here. This project adheres
+to [Semantic Versioning](https://semver.org/).
+
+## 0.1.0-alpha.0
+
+First public alpha. The API may change before `1.0`.
+
+### Added
+
+- **`<Skeleton loading>`** — derives a skeleton from the host-element tree
+  (`View` / `Text` / `Image`) you pass, using each element's own styles.
+- **`deep` mode (experimental)** — expands opaque custom components into their
+  real host tree via an offline `react-reconciler` renderer, producing a
+  structured skeleton with no inlining. Also available as the `withSkeleton`
+  HOC. Requires `react-reconciler`.
+- **`styles` prop** + `Skelo.fromStyles` — generate a skeleton directly from a
+  `StyleSheet` (a stack of shapes, one per style with visual dimensions).
+- **`Skeleton.Ignore`** — keep children as real content during loading.
+- **Plugin registry** — `Skelo.register` custom skeleton strategies for
+  specific components.
+- **Primitives** — `SkeletonBox`, `SkeletonText`, `SkeletonImage`,
+  `SkeletonCircle`.
+- **Animations** — shimmer, pulse, and none (Reanimated-based).
+- Fallback: components Skelo can't introspect are measured and shown as a
+  single size-matched block.
+
+### Known limitations
+
+- `deep` runs a component's mount effects during introspection and renders
+  outside app providers; prefer it for presentational trees and register a
+  plugin (or provide a manual skeleton) for effectful/context-bound screens.
+- Native content (WebView, MapView, Video, …) can only become a single sized
+  block, since it isn't part of the React tree.
