@@ -80,6 +80,15 @@ export interface SkeletonProps {
   excludeStyles?: string[];
 
   /**
+   * Number of placeholder rows to render for a `FlatList` / `SectionList`
+   * while its data is still loading (its rows don't exist yet, so Skelo calls
+   * `renderItem` with a placeholder and repeats it `count` times).
+   *
+   * @default 6
+   */
+  count?: number;
+
+  /**
    * Deep mode: expand opaque (custom) child components into their real
    * host-element tree via offline rendering, producing a structured skeleton
    * without inlining host elements.

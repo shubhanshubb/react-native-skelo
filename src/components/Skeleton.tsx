@@ -5,6 +5,7 @@ import { SkeletonRenderer } from './SkeletonRenderer';
 import { SkeletonIgnore } from './SkeletonIgnore';
 import { StyleSkeleton } from '../core/generator/StyleSkeleton';
 import { getDeepExpander } from '../core/deepRegistry';
+import { expandListPlaceholders } from '../core/parser/expandLists';
 import { DEFAULT_CONFIG } from '../constants/defaults';
 
 /**
@@ -40,7 +41,8 @@ export function Skeleton({
   children,
   styles,
   excludeStyles,
-  deep = false,
+  deep,
+  count = 6,
   animation = DEFAULT_CONFIG.animation,
   duration = DEFAULT_CONFIG.duration,
   baseColor = DEFAULT_CONFIG.baseColor,
@@ -63,27 +65,31 @@ export function Skeleton({
     }
 
     try {
+      // Turn FlatList/SectionList into placeholder rows so lists show a
+      // skeleton even though their data (and rows) don't exist yet.
+      const prepared = expandListPlaceholders(children, count);
+
       // Deep mode: expand opaque components into their real host tree via the
       // opt-in expander (registered by importing 'react-native-skelo/deep').
-      // Falls back to static parsing if unavailable or it returns nothing.
-      if (deep) {
-        const expand = getDeepExpander();
-        if (expand) {
-          const expanded = expand(<>{children}</>);
-          if (expanded && expanded.length > 0) {
-            return expanded;
-          }
-          if (__DEV__) {
-            console.warn('[Skelo] deep expansion returned nothing; falling back to static parsing.');
-          }
-        } else if (__DEV__) {
-          console.warn(
-            "[Skelo] `deep` requires react-reconciler. Install it and add `import 'react-native-skelo/deep';` in your app entry."
-          );
+      // When `deep` is not set explicitly, it's used automatically whenever the
+      // expander is available. Falls back to static parsing otherwise.
+      const expand = getDeepExpander();
+      const wantDeep = deep === undefined ? expand !== null : deep;
+      if (wantDeep && expand) {
+        const expanded = expand(<>{prepared}</>);
+        if (expanded && expanded.length > 0) {
+          return expanded;
         }
+        if (__DEV__) {
+          console.warn('[Skelo] deep expansion returned nothing; falling back to static parsing.');
+        }
+      } else if (deep === true && !expand && __DEV__) {
+        console.warn(
+          "[Skelo] `deep` requires react-reconciler. Install it and add `import 'react-native-skelo/deep';` in your app entry."
+        );
       }
 
-      const parsed = Parser.parse(children);
+      const parsed = Parser.parse(prepared);
 
       if (__DEV__ && debug) {
         // Log a lightweight summary: the raw nodes hold React elements
@@ -104,7 +110,7 @@ export function Skeleton({
       }
       return [];
     }
-  }, [loading, styles, deep, children, debug]);
+  }, [loading, styles, deep, count, children, debug]);
 
   // Create skeleton config
   const config = useMemo(

@@ -6,6 +6,10 @@
  * @packageDocumentation
  */
 
+// Auto-register deep expansion (react-reconciler ships as a dependency), so
+// `<Skeleton deep>` / opaque components work with zero setup.
+import './deep';
+
 // Main component
 export { Skeleton } from './components/Skeleton';
 export { SkeletonIgnore } from './components/SkeletonIgnore';

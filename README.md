@@ -26,35 +26,30 @@ import { Skeleton } from 'react-native-skelo';
 
 While `loading`, Skelo reads the tree and its styles and renders a matching skeleton (circle avatar, text bar). When `loading` is `false`, it renders your real content.
 
+## Demo
+
+<p align="center">
+  <img src="./assets/demo.gif" alt="Skelo auto-generated skeleton" width="300" />
+  &nbsp;&nbsp;
+  <img src="./assets/grid.gif" alt="Image-grid skeleton" width="300" />
+</p>
+
+<p align="center"><em>Left: profile + list + cards &nbsp;·&nbsp; Right: image grid — all auto-generated.</em></p>
+
 ## Installation
 
 ```bash
-npm install react-native-skelo react-native-reanimated
+npm install react-native-skelo
 ```
 
-That's all you need for the basic (inline) and `styles` usage. The shimmer uses
-React Native's built-in `experimental_backgroundImage` gradient (New
-Architecture) — no gradient library required.
+That's it — **no other dependencies.** `deep` mode (skeletons from custom
+components) works out of the box: `react-reconciler` ships bundled and
+auto-registers, so there's no extra install, no import, no `deep` prop.
+Animations use React Native's built-in `Animated`, so no reanimated or gradient
+library is needed either.
 
-### To enable `deep` mode (optional)
-
-`deep` mode is opt-in so the core library never bundles a reconciler you don't
-use. Install `react-reconciler` (matching your React version) and import the
-deep entry **once** in your app's entry file:
-
-```bash
-# React 19:
-npm install react-reconciler@0.31.0
-# React 18:
-npm install react-reconciler@0.29.2
-```
-
-```js
-// index.js (app entry)
-import 'react-native-skelo/deep';
-```
-
-Without this, `<Skeleton deep>` simply falls back to static parsing (no crash).
+> React 18 apps: override `react-reconciler` to `0.29.x` (it ships targeting
+> React 19).
 
 ## Usage
 
@@ -161,10 +156,11 @@ Also exported: `withSkeleton`, `SkeletonIgnore`, `StyleSkeleton`, the primitives
 
 ## Requirements
 
-- React Native — New Architecture recommended (the shimmer's
-  `experimental_backgroundImage` gradient needs it)
-- `react-native-reanimated` ≥ 3
-- `react-reconciler` (optional, for `deep`) — must match your React version
+- React Native (New Architecture recommended)
+- **React 19** — `react-reconciler` ships as `^0.31`; React 18 apps should
+  override it to `0.29`
+- No other dependencies (animations use built-in `Animated`; `react-reconciler`
+  is bundled)
 
 ## License
 

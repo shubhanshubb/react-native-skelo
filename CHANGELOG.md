@@ -6,6 +6,34 @@ to [Semantic Versioning](https://semver.org/).
 `0.0.x` releases are pre-release/preview. The first **stable** release will be
 **`0.1.0`**.
 
+## 0.0.5
+
+### Changed
+
+- **`deep` works with zero setup.** `react-reconciler` now ships as a
+  dependency and deep expansion auto-registers, so wrapping a custom component
+  produces a structured skeleton out of the box — no manual install, no
+  `import 'react-native-skelo/deep'`, no `deep` prop. (Targets React 19; React
+  18 apps can override `react-reconciler` to `0.29`.)
+- **Animations no longer need `react-native-reanimated`.** Shimmer and pulse
+  now use React Native's built-in `Animated` (native driver). The only required
+  peers are `react` / `react-native`.
+
+### Required peers now
+
+- `react`, `react-native` (that's it). `react-reconciler` is bundled;
+  reanimated and `react-native-linear-gradient` are no longer required.
+
+## 0.0.4
+
+### Added
+
+- **Automatic list skeletons.** Wrapping a `FlatList`/`SectionList` in
+  `<Skeleton loading>` now shows a skeleton while data loads — Skelo calls the
+  list's `renderItem` with a placeholder and repeats it. Control the number of
+  placeholder rows with the `count` prop (default 6). No sample rows or separate
+  loading component needed.
+
 ## 0.0.3
 
 ### Changed

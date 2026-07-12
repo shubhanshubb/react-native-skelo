@@ -1,14 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
-import { StyleSheet } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-  Easing,
-} from 'react-native-reanimated';
+import { Animated, Easing, StyleSheet } from 'react-native';
 
 interface PulseProps {
   width?: DimensionValue;
@@ -21,7 +13,7 @@ interface PulseProps {
   children?: React.ReactNode;
 }
 
-// Breathing opacity loop on the UI thread with Reanimated.
+// Breathing opacity loop using React Native's built-in Animated (native driver).
 export function PulseAnimation({
   width,
   height,
@@ -31,36 +23,34 @@ export function PulseAnimation({
   style,
   children,
 }: PulseProps) {
-  const opacity = useSharedValue(1);
+  const opacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    opacity.value = withRepeat(
-      withSequence(
-        withTiming(0.5, {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 0.5,
           duration: duration / 2,
           easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
         }),
-        withTiming(1, {
+        Animated.timing(opacity, {
+          toValue: 1,
           duration: duration / 2,
           easing: Easing.inOut(Easing.ease),
-        })
-      ),
-      -1,
-      false
+          useNativeDriver: true,
+        }),
+      ])
     );
+    loop.start();
+    return () => loop.stop();
   }, [duration, opacity]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    'worklet';
-    return { opacity: opacity.value };
-  }, []);
 
   return (
     <Animated.View
       style={[
         styles.container,
-        { width, height, borderRadius, backgroundColor: baseColor },
-        animatedStyle,
+        { width, height, borderRadius, backgroundColor: baseColor, opacity },
         style,
       ]}
     >

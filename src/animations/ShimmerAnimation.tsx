@@ -1,19 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import type {
-  DimensionValue,
-  LayoutChangeEvent,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
-import { StyleSheet, View } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  interpolate,
-  Easing,
-} from 'react-native-reanimated';
+import React, { useEffect, useRef, useState } from 'react';
+import type { DimensionValue, LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 
 interface ShimmerProps {
   width?: DimensionValue;
@@ -26,9 +13,9 @@ interface ShimmerProps {
   children?: React.ReactNode;
 }
 
-// Shimmer with no gradient library: the sweeping overlay uses React Native's
-// built-in `experimental_backgroundImage` CSS gradient (New Architecture),
-// animated on the UI thread with Reanimated.
+// Zero-dependency shimmer: a highlight band (dim/bright/dim segments to fake a
+// soft gradient) sweeps across the base, driven by React Native's built-in
+// Animated native driver. Plain Views only — guaranteed to render and animate.
 export function ShimmerAnimation({
   width,
   height,
@@ -39,15 +26,20 @@ export function ShimmerAnimation({
   style,
   children,
 }: ShimmerProps) {
-  const progress = useSharedValue(0);
+  const progress = useRef(new Animated.Value(0)).current;
   const [measuredWidth, setMeasuredWidth] = useState(0);
 
   useEffect(() => {
-    progress.value = withRepeat(
-      withTiming(1, { duration, easing: Easing.linear }),
-      -1,
-      false
+    const loop = Animated.loop(
+      Animated.timing(progress, {
+        toValue: 1,
+        duration,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
     );
+    loop.start();
+    return () => loop.stop();
   }, [duration, progress]);
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -55,38 +47,26 @@ export function ShimmerAnimation({
     setMeasuredWidth(prev => (prev === w ? prev : w));
   };
 
-  const containerWidth = typeof width === 'number' ? width : measuredWidth;
+  const containerWidth = typeof width === 'number' ? width : measuredWidth || 200;
+  const bandWidth = Math.max(containerWidth * 0.6, 80);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    'worklet';
-    const translateX = interpolate(
-      progress.value,
-      [0, 1],
-      [-containerWidth, containerWidth]
-    );
-    return { transform: [{ translateX }] };
-  }, [containerWidth]);
-
-  // `experimental_backgroundImage` isn't in the ViewStyle types yet.
-  const gradientStyle = {
-    ...StyleSheet.absoluteFillObject,
-    experimental_backgroundImage: `linear-gradient(to right, ${baseColor}, ${highlightColor}, ${baseColor})`,
-  } as unknown as ViewStyle;
+  const translateX = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-bandWidth, containerWidth],
+  });
 
   return (
     <View
       onLayout={onLayout}
-      style={[
-        styles.container,
-        { width, height, borderRadius, backgroundColor: baseColor },
-        style,
-      ]}
+      style={[styles.container, { width, height, borderRadius, backgroundColor: baseColor }, style]}
     >
       <Animated.View
         pointerEvents="none"
-        style={[StyleSheet.absoluteFill, animatedStyle]}
+        style={[styles.band, { width: bandWidth, transform: [{ translateX }] }]}
       >
-        <View style={gradientStyle} />
+        <View style={[styles.segment, { backgroundColor: highlightColor, opacity: 0.25 }]} />
+        <View style={[styles.segment, { backgroundColor: highlightColor, opacity: 0.9 }]} />
+        <View style={[styles.segment, { backgroundColor: highlightColor, opacity: 0.25 }]} />
       </Animated.View>
 
       {children}
@@ -97,5 +77,14 @@ export function ShimmerAnimation({
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
+  },
+  band: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    flexDirection: 'row',
+  },
+  segment: {
+    flex: 1,
   },
 });
