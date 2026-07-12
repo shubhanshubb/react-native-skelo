@@ -1,12 +1,29 @@
 {
   "name": "react-native-skelo",
-  "version": "0.1.0-alpha.0",
+  "version": "0.0.2",
   "description": "Automatic skeleton loading for React Native. Write your UI once, Skelo builds the loading state automatically.",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
   "types": "lib/typescript/index.d.ts",
   "react-native": "src/index.ts",
   "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/typescript/index.d.ts",
+      "react-native": "./src/index.ts",
+      "import": "./lib/module/index.js",
+      "require": "./lib/commonjs/index.js",
+      "default": "./lib/commonjs/index.js"
+    },
+    "./deep": {
+      "types": "./lib/typescript/deep.d.ts",
+      "react-native": "./src/deep.ts",
+      "import": "./lib/module/deep.js",
+      "require": "./lib/commonjs/deep.js",
+      "default": "./lib/commonjs/deep.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "src",
     "lib",

@@ -4,12 +4,12 @@
 
 **Write your UI once. Skelo builds the loading state automatically.**
 
-[![npm](https://img.shields.io/npm/v/react-native-skelo/alpha)](https://www.npmjs.com/package/react-native-skelo)
+[![npm](https://img.shields.io/npm/v/react-native-skelo)](https://www.npmjs.com/package/react-native-skelo)
 [![license](https://img.shields.io/npm/l/react-native-skelo)](./LICENSE)
 
 </div>
 
-> ⚠️ **Alpha.** The API may change before `1.0`. The `deep` engine is experimental — see [caveats](#deep-mode-caveats-experimental).
+> ⚠️ **Pre-release (`0.0.x`).** Early and evolving — the API may change. The first **stable** release will be **`0.1.0`**. The `deep` engine is experimental — see [caveats](#deep-mode-caveats-experimental).
 
 Skeleton loading screens usually mean building — and maintaining — a second copy of your UI. Skelo derives the skeleton from the UI you already wrote.
 
@@ -29,16 +29,31 @@ While `loading`, Skelo reads the tree and its styles and renders a matching skel
 ## Installation
 
 ```bash
-npm install react-native-skelo@alpha
+npm install react-native-skelo
+npm install react-native-reanimated react-native-linear-gradient
 ```
 
-Peer dependencies:
+That's all you need for the basic (inline) and `styles` usage.
+
+### To enable `deep` mode (optional)
+
+`deep` mode is opt-in so the core library never bundles a reconciler you don't
+use. Install `react-reconciler` (matching your React version) and import the
+deep entry **once** in your app's entry file:
 
 ```bash
-npm install react-native-reanimated react-native-linear-gradient
-# Optional — only needed for `deep` mode:
-npm install react-reconciler
+# React 19:
+npm install react-reconciler@0.31.0
+# React 18:
+npm install react-reconciler@0.29.2
 ```
+
+```js
+// index.js (app entry)
+import 'react-native-skelo/deep';
+```
+
+Without this, `<Skeleton deep>` simply falls back to static parsing (no crash).
 
 ## Usage
 
@@ -73,7 +88,7 @@ const Home = withSkeleton(HomeScreen);
 <Home loading={loading} {...props} />
 ```
 
-Requires `react-reconciler`. See [caveats](#deep-mode-caveats-experimental).
+Requires `react-reconciler` + `import 'react-native-skelo/deep'` (see [Installation](#to-enable-deep-mode-optional)). See also [caveats](#deep-mode-caveats-experimental).
 
 ### `styles` — generate from a StyleSheet
 

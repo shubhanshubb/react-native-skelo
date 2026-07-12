@@ -4,7 +4,7 @@ import { Parser } from '../core/parser';
 import { SkeletonRenderer } from './SkeletonRenderer';
 import { SkeletonIgnore } from './SkeletonIgnore';
 import { StyleSkeleton } from '../core/generator/StyleSkeleton';
-import { expandToComponentNodes } from '../core/parser/expandOffline';
+import { getDeepExpander } from '../core/deepRegistry';
 import { DEFAULT_CONFIG } from '../constants/defaults';
 
 /**
@@ -63,15 +63,23 @@ export function Skeleton({
     }
 
     try {
-      // Deep mode: expand opaque components into their real host tree by
-      // rendering them offline. Falls back to static parsing on failure.
+      // Deep mode: expand opaque components into their real host tree via the
+      // opt-in expander (registered by importing 'react-native-skelo/deep').
+      // Falls back to static parsing if unavailable or it returns nothing.
       if (deep) {
-        const expanded = expandToComponentNodes(<>{children}</>);
-        if (expanded && expanded.length > 0) {
-          return expanded;
-        }
-        if (__DEV__) {
-          console.warn('[Skelo] deep expansion returned nothing; falling back to static parsing.');
+        const expand = getDeepExpander();
+        if (expand) {
+          const expanded = expand(<>{children}</>);
+          if (expanded && expanded.length > 0) {
+            return expanded;
+          }
+          if (__DEV__) {
+            console.warn('[Skelo] deep expansion returned nothing; falling back to static parsing.');
+          }
+        } else if (__DEV__) {
+          console.warn(
+            "[Skelo] `deep` requires react-reconciler. Install it and add `import 'react-native-skelo/deep';` in your app entry."
+          );
         }
       }
 
