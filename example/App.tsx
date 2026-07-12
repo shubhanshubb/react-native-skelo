@@ -43,9 +43,7 @@ const LIST_ITEMS = [
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const [animation, setAnimation] = useState<'shimmer' | 'pulse' | 'none'>(
-    'shimmer'
-  );
+  const [animation, setAnimation] = useState<'shimmer' | 'pulse' | 'none'>('shimmer');
 
   // Simulate data loading
   useEffect(() => {
@@ -59,46 +57,42 @@ export default function App() {
   const reloadData = () => setLoading(true);
 
   const toggleAnimation = () => {
-    setAnimation(prev =>
-      prev === 'shimmer' ? 'pulse' : prev === 'pulse' ? 'none' : 'shimmer'
-    );
+    setAnimation(prev => (prev === 'shimmer' ? 'pulse' : prev === 'pulse' ? 'none' : 'shimmer'));
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Skelo Example</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.button} onPress={toggleAnimation}>
-            <Text style={styles.buttonText}>Animation: {animation}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={reloadData}>
-            <Text style={styles.buttonText}>
-              {loading ? 'Loading...' : 'Reload'}
-            </Text>
-          </TouchableOpacity>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Skelo Example</Text>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity style={styles.button} onPress={toggleAnimation}>
+              <Text style={styles.buttonText}>Animation: {animation}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={reloadData}>
+              <Text style={styles.buttonText}>{loading ? 'Loading...' : 'Reload'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      <ScrollView style={styles.scrollView}>
-        {/* Deep mode: wrap an opaque screen component and Skelo expands it into
+        <ScrollView style={styles.scrollView}>
+          {/* Deep mode: wrap an opaque screen component and Skelo expands it into
             a structured skeleton automatically — no inlining, no escape hatches.
             This is the "write your UI once" DX. */}
-        <Skeleton loading={loading} animation={animation} deep>
-          <ProfileScreen />
-        </Skeleton>
+          <Skeleton loading={loading} animation={animation} deep>
+            <ProfileScreen />
+          </Skeleton>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Built with react-native-skelo v{Skelo.version}
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Built with react-native-skelo v{Skelo.version}</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -113,16 +107,13 @@ function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Profile</Text>
         <View style={styles.profileCard}>
-          <Image
-            source={{ uri: 'https://i.pravatar.cc/300?img=1' }}
-            style={styles.avatar}
-          />
+          <Image source={{ uri: 'https://i.pravatar.cc/300?img=1' }} style={styles.avatar} />
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>John Doe</Text>
             <Text style={styles.profileEmail}>john.doe@example.com</Text>
             <Text style={styles.profileBio}>
-              Software engineer passionate about React Native and open source.
-              Building great mobile experiences.
+              Software engineer passionate about React Native and open source. Building great mobile
+              experiences.
             </Text>
           </View>
         </View>
@@ -153,8 +144,8 @@ function ProfileScreen() {
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>Card Title</Text>
             <Text style={styles.cardDescription}>
-              This is a card with an image and some text content. Perfect for
-              showcasing articles, products, or media.
+              This is a card with an image and some text content. Perfect for showcasing articles,
+              products, or media.
             </Text>
           </View>
         </View>
@@ -163,8 +154,7 @@ function ProfileScreen() {
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>Another Card</Text>
             <Text style={styles.cardDescription}>
-              Cards can have different layouts and content. This one has no
-              image.
+              Cards can have different layouts and content. This one has no image.
             </Text>
           </View>
         </View>
