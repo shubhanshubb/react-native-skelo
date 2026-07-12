@@ -1,130 +1,121 @@
 <div align="center">
 
-# react-native-skelo
+# 🦴 react-native-skelo
 
-**Write your UI once. Skelo builds the loading state automatically.**
+### Write your UI once. Skelo builds the loading state — automatically.
 
-[![npm](https://img.shields.io/npm/v/react-native-skelo)](https://www.npmjs.com/package/react-native-skelo)
-[![license](https://img.shields.io/npm/l/react-native-skelo)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/react-native-skelo?color=5FC9F8&label=npm)](https://www.npmjs.com/package/react-native-skelo)
+[![downloads](https://img.shields.io/npm/dm/react-native-skelo?color=5FC9F8)](https://www.npmjs.com/package/react-native-skelo)
+[![license](https://img.shields.io/npm/l/react-native-skelo?color=5FC9F8)](./LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-5FC9F8.svg)](https://github.com/shubhanshubb/react-native-skelo)
+
+<br />
+
+<img src="./assets/demo.gif" alt="Skelo skeleton demo" width="270" />
+&nbsp;&nbsp;
+<img src="./assets/grid.gif" alt="Image-grid skeleton" width="270" />
 
 </div>
 
-> ⚠️ **Pre-release (`0.0.x`).** Early and evolving — the API may change. The first **stable** release will be **`0.1.0`**. The `deep` engine is experimental — see [caveats](#deep-mode-caveats-experimental).
+<br />
 
-Skeleton loading screens usually mean building — and maintaining — a second copy of your UI. Skelo derives the skeleton from the UI you already wrote.
+**Stop building and maintaining a second copy of your UI just for loading states.** Wrap your components in `<Skeleton>` and Skelo generates a matching skeleton — sized from the styles you already wrote.
 
 ```tsx
-import { Skeleton } from 'react-native-skelo';
-
 <Skeleton loading={isLoading}>
-  <View style={styles.card}>
-    <Image style={styles.avatar} />
-    <Text style={styles.name}>{user.name}</Text>
-  </View>
+  <ProfileCard user={user} />
 </Skeleton>
 ```
 
-While `loading`, Skelo reads the tree and its styles and renders a matching skeleton (circle avatar, text bar). When `loading` is `false`, it renders your real content.
+That's the whole API. No skeleton screens to hand-draw, no keeping two layouts in sync.
 
-## Demo
+> ⚠️ **Pre-release (`0.0.x`)** — evolving fast; the API may change before the stable `0.1.0`.
 
-<p align="center">
-  <img src="./assets/demo.gif" alt="Skelo auto-generated skeleton" width="300" />
-  &nbsp;&nbsp;
-  <img src="./assets/grid.gif" alt="Image-grid skeleton" width="300" />
-</p>
+---
 
-<p align="center"><em>Left: profile + list + cards &nbsp;·&nbsp; Right: image grid — all auto-generated.</em></p>
+## ✨ Features
 
-## Installation
+- 🪄 **Zero-config** — wrap a component, get a skeleton. No setup, no separate loading screen.
+- 🧠 **Sees inside your components** — introspects custom components automatically (no inlining).
+- 📋 **Lists included** — `FlatList` / `SectionList` render skeleton rows while data loads.
+- 🎨 **Shimmer · Pulse · None** — built-in animations on the native driver.
+- 🪶 **No dependencies** — no `reanimated`, no gradient library. Just `react` + `react-native`.
+- 📐 **Style-aware** — every skeleton is sized from your real element styles.
+
+---
+
+## 📦 Installation
 
 ```bash
 npm install react-native-skelo
 ```
 
-That's it — **no other dependencies.** `deep` mode (skeletons from custom
-components) works out of the box: `react-reconciler` ships bundled and
-auto-registers, so there's no extra install, no import, no `deep` prop.
-Animations use React Native's built-in `Animated`, so no reanimated or gradient
-library is needed either.
+**That's it — no other dependencies.** Everything (including custom-component introspection) works out of the box.
 
-> React 18 apps: override `react-reconciler` to `0.29.x` (it ships targeting
-> React 19).
+> React 18 apps: add `"react-reconciler": "0.29.x"` to your deps (Skelo ships targeting React 19's `0.31`).
 
-## Usage
+---
 
-### Basic — inline host elements
+## 🚀 Usage
 
-Skelo traverses the `View` / `Text` / `Image` tree you pass and mirrors it:
+### Just wrap it
 
 ```tsx
-<Skeleton loading={loading} animation="shimmer">
-  <View style={styles.row}>
-    <Image style={styles.avatar} />          {/* → circle / box */}
-    <Text style={styles.title}>Title</Text>  {/* → text bar    */}
-  </View>
+import { Skeleton } from 'react-native-skelo';
+
+function Screen({ loading, user }) {
+  return (
+    <Skeleton loading={loading} animation="shimmer">
+      <ProfileCard user={user} />
+    </Skeleton>
+  );
+}
+```
+
+Skelo renders `ProfileCard`, reads its real `View`/`Text`/`Image` tree + styles, and draws a matching skeleton while `loading` is `true`. When it's `false`, your real UI renders.
+
+### Lists
+
+Wrap a `FlatList` — Skelo fills it with skeleton rows while the data loads:
+
+```tsx
+<Skeleton loading={loading} count={6}>
+  <FlatList data={items} renderItem={renderItem} />
 </Skeleton>
 ```
 
-Structure comes from the JSX; dimensions come from each element's `style`.
-
-### `deep` — wrap any component (experimental)
-
-Don't want to inline? Wrap an opaque component and let Skelo introspect it:
-
-```tsx
-import { Skeleton, withSkeleton } from 'react-native-skelo';
-
-<Skeleton loading={loading} deep>
-  <ProfileScreen />
-</Skeleton>
-
-// or as an HOC:
-const Home = withSkeleton(HomeScreen);
-<Home loading={loading} {...props} />
-```
-
-Requires `react-reconciler` + `import 'react-native-skelo/deep'` (see [Installation](#to-enable-deep-mode-optional)). See also [caveats](#deep-mode-caveats-experimental).
-
-### `styles` — generate from a StyleSheet
-
-Pass styles directly to get a stack of skeleton shapes (no children needed):
-
-```tsx
-<Skeleton loading={loading} styles={styles} excludeStyles={['container']} />
-```
-
-A StyleSheet has no hierarchy, so this produces one shape per style that has visual dimensions.
-
-### `Skeleton.Ignore` — keep something visible
+### Keep something visible
 
 ```tsx
 <Skeleton loading={loading}>
   <Skeleton.Ignore>
-    <Text style={styles.heading}>Profile</Text>  {/* stays real */}
+    <Text style={styles.heading}>Profile</Text>   {/* stays real */}
   </Skeleton.Ignore>
   <ProfileBody />
 </Skeleton>
 ```
 
-### Custom components — register a plugin
+### Generate from a StyleSheet
+
+```tsx
+<Skeleton loading={loading} styles={styles} excludeStyles={['container']} />
+```
+
+### Custom skeleton for a component
 
 ```tsx
 import { Skelo } from 'react-native-skelo';
-import { Avatar } from 'my-design-system';
 
 Skelo.register({
   name: 'Avatar',
   component: Avatar,
-  strategy: (props, { primitives }) => (
-    <primitives.Circle size={props.size ?? 40} />
-  ),
+  strategy: (props, { primitives }) => <primitives.Circle size={props.size ?? 40} />,
 });
 ```
 
-## API
+---
 
-### `<Skeleton>` props
+## ⚙️ `<Skeleton>` props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -133,35 +124,42 @@ Skelo.register({
 | `duration` | `number` | `1200` | Animation duration (ms) |
 | `baseColor` / `highlightColor` | `string` | theme | Skeleton colors |
 | `borderRadius` | `number` | `4` | Default corner radius |
-| `deep` | `boolean` | `false` | Expand opaque components (experimental) |
+| `count` | `number` | `6` | Placeholder rows for a `FlatList`/`SectionList` |
+| `deep` | `boolean` | auto | Force component introspection on/off (auto when available) |
 | `styles` | `StyleSheet \| style[]` | — | Generate from styles instead of children |
-| `excludeStyles` | `string[]` | — | Style keys to skip in `styles` mode |
 | `accessibilityLabel` | `string` | `'Loading content'` | Screen-reader label |
 
-Also exported: `withSkeleton`, `SkeletonIgnore`, `StyleSkeleton`, the primitives (`SkeletonBox`, `SkeletonText`, `SkeletonImage`, `SkeletonCircle`), and `Skelo` (plugin registry + `Skelo.fromStyles`).
+Also exported: `withSkeleton`, `SkeletonIgnore`, `StyleSkeleton`, the primitives (`SkeletonBox`, `SkeletonText`, `SkeletonImage`, `SkeletonCircle`), and `Skelo` (`register` / `fromStyles`).
 
-## How it works
+---
 
-- **Inline mode** — static traversal of the host-element tree (`React.Children` + `StyleSheet.flatten`).
-- **`deep` mode** — a JS-only `react-reconciler` renderer renders the component off-screen to recover its real host tree + styles, then feeds the same skeleton renderer.
-- Anything Skelo can't introspect (a custom component without `deep`, or native content) is measured and shown as a single size-matched block.
+## 🧩 How it works
 
-## `deep` mode caveats (experimental)
+- **Host elements** (`View` / `Text` / `Image`) are read directly (`React.Children` + `StyleSheet.flatten`).
+- **Custom components** are expanded by a tiny JS-only `react-reconciler` renderer (bundled) that renders them off-screen to recover their real host tree + styles — then feeds the same skeleton engine.
+- Anything Skelo can't introspect (native content) is measured and shown as one size-matched block.
 
-`deep` renders your component offline to read its structure, which means:
+---
 
-- **Mount effects run** during introspection — a screen that fetches on mount may fetch twice. Prefer `deep` for presentational trees; register a plugin or provide a manual skeleton for effectful screens.
-- **Renders outside your providers** — components that require navigation/theme/redux context may fail to expand; Skelo catches this and falls back to a measured block.
-- Only the **React host tree** is visible. `WebView`, `MapView`, `Video`, etc. render their content natively (outside React), so they can only become a single sized block.
+## ⚠️ Good to know
 
-## Requirements
+Skelo skeletonizes **what your component renders during loading**:
+
+- Introspection **runs mount effects** — a screen that fetches on mount may fetch twice. Prefer it for presentational trees; register a plugin for effect-heavy screens.
+- It renders **outside your providers** — components needing navigation/theme/redux context fall back to a measured block.
+- **Native content** (`WebView`, `MapView`, `Video`, …) lives outside React, so it becomes a single sized block.
+- A **data-driven list/grid** that renders nothing while loading has nothing to skeletonize — keep placeholder items rendered (see the [example](./example)).
+
+---
+
+## 📋 Requirements
 
 - React Native (New Architecture recommended)
-- **React 19** — `react-reconciler` ships as `^0.31`; React 18 apps should
-  override it to `0.29`
-- No other dependencies (animations use built-in `Animated`; `react-reconciler`
-  is bundled)
+- React 19 (React 18 → override `react-reconciler` to `0.29`)
+- No other dependencies
 
-## License
+---
+
+## 📄 License
 
 MIT © [Shubhanshu Barnwal](https://shubhanshubb.dev)
