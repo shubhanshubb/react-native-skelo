@@ -29,11 +29,12 @@ While `loading`, Skelo reads the tree and its styles and renders a matching skel
 ## Installation
 
 ```bash
-npm install react-native-skelo
-npm install react-native-reanimated react-native-linear-gradient
+npm install react-native-skelo react-native-reanimated
 ```
 
-That's all you need for the basic (inline) and `styles` usage.
+That's all you need for the basic (inline) and `styles` usage. The shimmer uses
+React Native's built-in `experimental_backgroundImage` gradient (New
+Architecture) — no gradient library required.
 
 ### To enable `deep` mode (optional)
 
@@ -160,7 +161,8 @@ Also exported: `withSkeleton`, `SkeletonIgnore`, `StyleSkeleton`, the primitives
 
 ## Requirements
 
-- React Native (Fabric / New Architecture recommended)
+- React Native — New Architecture recommended (the shimmer's
+  `experimental_backgroundImage` gradient needs it)
 - `react-native-reanimated` ≥ 3
 - `react-reconciler` (optional, for `deep`) — must match your React version
 

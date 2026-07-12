@@ -8,9 +8,3 @@ jest.mock('react-native-reanimated', () =>
 
 // Silence the native animation helper warning under Jest.
 global.__reanimatedWorkletInit = () => {};
-
-// Mock the linear gradient native component with a plain view.
-jest.mock('react-native-linear-gradient', () => {
-  const { View } = require('react-native');
-  return { __esModule: true, default: View, LinearGradient: View };
-});

@@ -6,6 +6,16 @@ to [Semantic Versioning](https://semver.org/).
 `0.0.x` releases are pre-release/preview. The first **stable** release will be
 **`0.1.0`**.
 
+## 0.0.3
+
+### Changed
+
+- **Dropped the `react-native-linear-gradient` dependency.** The shimmer now
+  draws its gradient with React Native's built-in `experimental_backgroundImage`
+  (New Architecture), animated with Reanimated. One less native peer dep to
+  install — the only required peers are now `react` / `react-native` /
+  `react-native-reanimated`.
+
 ## 0.0.2
 
 ### Fixed

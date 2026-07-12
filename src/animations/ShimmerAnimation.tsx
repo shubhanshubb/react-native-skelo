@@ -1,5 +1,10 @@
-import React, { useEffect } from 'react';
-import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import type {
+  DimensionValue,
+  LayoutChangeEvent,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -9,70 +14,21 @@ import Animated, {
   interpolate,
   Easing,
 } from 'react-native-reanimated';
-import { LinearGradient } from 'react-native-linear-gradient';
 
 interface ShimmerProps {
-  /**
-   * Width of the shimmer container
-   */
   width?: DimensionValue;
-
-  /**
-   * Height of the shimmer container
-   */
   height?: DimensionValue;
-
-  /**
-   * Base color of the skeleton
-   * @default '#E1E9EE'
-   */
   baseColor?: string;
-
-  /**
-   * Highlight color that shimmers across
-   * @default '#F2F8FC'
-   */
   highlightColor?: string;
-
-  /**
-   * Animation duration in milliseconds
-   * @default 1500
-   */
   duration?: number;
-
-  /**
-   * Border radius
-   */
   borderRadius?: number;
-
-  /**
-   * Additional styles
-   */
   style?: StyleProp<ViewStyle>;
-
-  /**
-   * Child content (rendered on top of shimmer)
-   */
   children?: React.ReactNode;
 }
 
-/**
- * Shimmer animation component using Reanimated 3
- *
- * Creates a smooth left-to-right shimmer effect using:
- * - Shared values for performance
- * - Worklets for 60 FPS on UI thread
- * - Linear gradient for shimmer effect
- *
- * @example
- * ```tsx
- * <ShimmerAnimation
- *   width={200}
- *   height={20}
- *   borderRadius={4}
- * />
- * ```
- */
+// Shimmer with no gradient library: the sweeping overlay uses React Native's
+// built-in `experimental_backgroundImage` CSS gradient (New Architecture),
+// animated on the UI thread with Reanimated.
 export function ShimmerAnimation({
   width,
   height,
@@ -83,77 +39,56 @@ export function ShimmerAnimation({
   style,
   children,
 }: ShimmerProps) {
-  // Shared value for animation progress (0 to 1)
   const progress = useSharedValue(0);
+  const [measuredWidth, setMeasuredWidth] = useState(0);
 
   useEffect(() => {
-    // Start infinite shimmer animation
     progress.value = withRepeat(
-      withTiming(1, {
-        duration,
-        easing: Easing.linear,
-      }),
-      -1, // Infinite repeat
-      false // Don't reverse
+      withTiming(1, { duration, easing: Easing.linear }),
+      -1,
+      false
     );
   }, [duration, progress]);
 
-  // Animated style for shimmer overlay
+  const onLayout = (event: LayoutChangeEvent) => {
+    const w = event.nativeEvent.layout.width;
+    setMeasuredWidth(prev => (prev === w ? prev : w));
+  };
+
+  const containerWidth = typeof width === 'number' ? width : measuredWidth;
+
   const animatedStyle = useAnimatedStyle(() => {
     'worklet';
+    const translateX = interpolate(
+      progress.value,
+      [0, 1],
+      [-containerWidth, containerWidth]
+    );
+    return { transform: [{ translateX }] };
+  }, [containerWidth]);
 
-    // Calculate shimmer position
-    // Interpolate from -100% to 100% to create left-to-right sweep
-    const translateX = interpolate(progress.value, [0, 1], [-1, 1]);
-
-    return {
-      transform: [{ translateX: translateX * (typeof width === 'number' ? width : 200) }],
-    };
-  }, [width]);
+  // `experimental_backgroundImage` isn't in the ViewStyle types yet.
+  const gradientStyle = {
+    ...StyleSheet.absoluteFillObject,
+    experimental_backgroundImage: `linear-gradient(to right, ${baseColor}, ${highlightColor}, ${baseColor})`,
+  } as unknown as ViewStyle;
 
   return (
     <View
+      onLayout={onLayout}
       style={[
         styles.container,
-        {
-          width,
-          height,
-          borderRadius,
-          backgroundColor: baseColor,
-        },
+        { width, height, borderRadius, backgroundColor: baseColor },
         style,
       ]}
     >
-      {/* Shimmer gradient overlay */}
       <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          {
-            overflow: 'hidden',
-            borderRadius,
-          },
-        ]}
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, animatedStyle]}
       >
-        <Animated.View
-          style={[
-            styles.shimmer,
-            {
-              width: typeof width === 'number' ? width : '100%',
-              height: '100%',
-            },
-            animatedStyle,
-          ]}
-        >
-          <LinearGradient
-            colors={[baseColor, highlightColor, highlightColor, baseColor]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
+        <View style={gradientStyle} />
       </Animated.View>
 
-      {/* Child content */}
       {children}
     </View>
   );
@@ -162,8 +97,5 @@ export function ShimmerAnimation({
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-  },
-  shimmer: {
-    position: 'absolute',
   },
 });
