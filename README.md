@@ -29,7 +29,7 @@
 
 That's the whole API. No skeleton screens to hand-draw, no keeping two layouts in sync.
 
-> ⚠️ **Pre-release (`0.0.x`)** — evolving fast; the API may change before the stable `0.1.0`.
+> **Stable release (`0.1.0`)** — Skelo now follows semantic versioning for its public API.
 
 ---
 
@@ -73,6 +73,30 @@ function Screen({ loading, user }) {
 ```
 
 Skelo renders `ProfileCard`, reads its real `View`/`Text`/`Image` tree + styles, and draws a matching skeleton while `loading` is `true`. When it's `false`, your real UI renders.
+
+### App-wide theme defaults
+
+Wrap your app in `SkeletonProvider` to share colors and animation settings:
+
+```tsx
+import { Skeleton, SkeletonProvider } from 'react-native-skelo';
+
+<SkeletonProvider
+  baseColor="#2A3F4F"
+  highlightColor="#3A5364"
+  animation="pulse"
+  duration={1500}
+>
+  <App />
+</SkeletonProvider>
+```
+
+Individual `Skeleton` props override the theme. Nested providers inherit settings
+from their parent, so a section can override just its colors. Themes also apply to
+`withSkeleton` and styles-driven skeletons. The provider accepts `animation`,
+`duration`, `baseColor`, `highlightColor`, `borderRadius`, and `debug`; without a
+provider, existing defaults are unchanged. Standalone primitives keep their own
+explicit props and defaults.
 
 ### Lists
 

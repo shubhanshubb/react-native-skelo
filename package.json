@@ -1,6 +1,6 @@
 {
   "name": "react-native-skelo",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Automatic skeleton loading for React Native. Write your UI once, Skelo builds the loading state automatically.",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
