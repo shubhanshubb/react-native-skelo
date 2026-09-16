@@ -1,23 +1,14 @@
-<div align="center">
+# React Native Skelo
 
-# 🦴 react-native-skelo
+[![npm version](https://img.shields.io/npm/v/react-native-skelo?style=flat&color=007ec6&label=npm)](https://www.npmjs.com/package/react-native-skelo)
+[![downloads](https://img.shields.io/npm/dm/react-native-skelo?style=flat&color=4c1&label=downloads)](https://www.npmjs.com/package/react-native-skelo)
+[![license](https://img.shields.io/npm/l/react-native-skelo?style=flat&color=97ca00&label=license)](./LICENSE)
 
-### Write your UI once. Skelo builds the loading state — automatically.
-
-[![npm version](https://img.shields.io/npm/v/react-native-skelo?color=5FC9F8&label=npm)](https://www.npmjs.com/package/react-native-skelo)
-[![downloads](https://img.shields.io/npm/dm/react-native-skelo?color=5FC9F8)](https://www.npmjs.com/package/react-native-skelo)
-[![license](https://img.shields.io/npm/l/react-native-skelo?color=5FC9F8)](./LICENSE)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-5FC9F8.svg)](https://github.com/shubhanshubb/react-native-skelo)
-
-<br />
+Automatic skeleton loading for React Native, built from the UI you already have. Skelo turns your components and lists into matching loading placeholders, with built-in shimmer and pulse animations. Theme support lets you share colors and animation settings across your app, with nested themes and per-view overrides through `SkeletonProvider`.
 
 <img src="./assets/demo.gif" alt="Skelo skeleton demo" width="270" />
 &nbsp;&nbsp;
 <img src="./assets/grid.gif" alt="Image-grid skeleton" width="270" />
-
-</div>
-
-<br />
 
 **Stop building and maintaining a second copy of your UI just for loading states.** Wrap your components in `<Skeleton>` and Skelo generates a matching skeleton — sized from the styles you already wrote.
 
