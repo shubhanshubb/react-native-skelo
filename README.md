@@ -39,6 +39,7 @@ That's the whole API. No skeleton screens to hand-draw, no keeping two layouts i
 - 🧠 **Sees inside your components** — introspects custom components automatically (no inlining).
 - 📋 **Lists included** — `FlatList` / `SectionList` render skeleton rows while data loads.
 - 🎨 **Shimmer · Pulse · None** — built-in animations on the native driver.
+- 🌗 **Theme support (new in 0.1.0)** — use `SkeletonProvider` for shared colors and animation defaults, with nested themes and per-view overrides.
 - 🪶 **No dependencies** — no `reanimated`, no gradient library. Just `react` + `react-native`.
 - 📐 **Style-aware** — every skeleton is sized from your real element styles.
 
@@ -74,9 +75,9 @@ function Screen({ loading, user }) {
 
 Skelo renders `ProfileCard`, reads its real `View`/`Text`/`Image` tree + styles, and draws a matching skeleton while `loading` is `true`. When it's `false`, your real UI renders.
 
-### App-wide theme defaults
+### Theme support (new in 0.1.0)
 
-Wrap your app in `SkeletonProvider` to share colors and animation settings:
+Wrap your app or a group of views in `SkeletonProvider` to share colors and animation settings:
 
 ```tsx
 import { Skeleton, SkeletonProvider } from 'react-native-skelo';
@@ -97,6 +98,51 @@ from their parent, so a section can override just its colors. Themes also apply 
 `duration`, `baseColor`, `highlightColor`, `borderRadius`, and `debug`; without a
 provider, existing defaults are unchanged. Standalone primitives keep their own
 explicit props and defaults.
+
+#### Follow light and dark mode
+
+Connect the provider to React Native's `useColorScheme` to update skeleton colors
+when the system theme changes:
+
+```tsx
+import { useColorScheme } from 'react-native';
+import { SkeletonProvider } from 'react-native-skelo';
+
+function ThemedApp() {
+  const isDark = useColorScheme() === 'dark';
+
+  return (
+    <SkeletonProvider
+      baseColor={isDark ? '#2A3F4F' : '#E1E9EE'}
+      highlightColor={isDark ? '#3A5364' : '#F0F4F8'}
+      animation="shimmer"
+    >
+      <App />
+    </SkeletonProvider>
+  );
+}
+```
+
+#### Override a view's theme
+
+Nest a provider to customize one section, or pass props to a single skeleton:
+
+```tsx
+<SkeletonProvider animation="pulse" baseColor="#E1E9EE">
+  <Skeleton loading={loading}>
+    <ProfileCard user={user} />
+  </Skeleton>
+
+  <SkeletonProvider baseColor="#2A3F4F" highlightColor="#3A5364">
+    <Skeleton loading={loading} animation="none">
+      <StatsCard stats={stats} />
+    </Skeleton>
+  </SkeletonProvider>
+</SkeletonProvider>
+```
+
+Here, the profile uses the shared pulse animation. The stats view uses the nested
+dark colors and its own static animation.
 
 ### Lists
 
