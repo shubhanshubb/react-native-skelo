@@ -6,9 +6,13 @@
 
 Automatic skeleton loading for React Native, built from the UI you already have. Skelo turns your components and lists into matching loading placeholders, with built-in shimmer and pulse animations. Theme support lets you share colors and animation settings across your app, with nested themes and per-view overrides through `SkeletonProvider`.
 
-<img src="./assets/demo.gif" alt="Skelo skeleton demo" width="270" />
-&nbsp;&nbsp;
-<img src="./assets/grid.gif" alt="Image-grid skeleton" width="270" />
+<p align="center">
+  <img src="./assets/demo.gif" alt="Skelo skeleton demo" width="270" />
+</p>
+
+<p align="center">
+  <img src="./assets/grid.gif" alt="Image-grid skeleton" width="270" />
+</p>
 
 **Stop building and maintaining a second copy of your UI just for loading states.** Wrap your components in `<Skeleton>` and Skelo generates a matching skeleton — sized from the styles you already wrote.
 
