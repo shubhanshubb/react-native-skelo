@@ -3,8 +3,21 @@
 All notable changes to this project are documented here. This project adheres
 to [Semantic Versioning](https://semver.org/).
 
-`0.0.x` releases are pre-release/preview. The first **stable** release will be
-**`0.1.0`**.
+## 0.1.0
+
+### Added
+
+- `SkeletonProvider` for shared colors, animation, duration, border radius, and
+  debug defaults. Nested providers inherit parent settings; individual
+  `Skeleton` props override the theme. Also works with `withSkeleton` and
+  styles-driven skeletons.
+
+### Changed
+
+- First stable release, promoting the existing API from the `0.0.x` previews.
+- Updated package metadata and `Skelo.version` to `0.1.0`.
+- Replaced the pre-release notice with the stable release policy.
+- Existing `Skeleton` usage keeps its defaults without a provider.
 
 ## 0.0.5
 

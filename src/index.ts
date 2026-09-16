@@ -11,6 +11,8 @@
 import './deep';
 
 // Main component
+export { SkeletonProvider } from './components/SkeletonProvider';
+export type { SkeletonProviderProps } from './components/SkeletonProvider';
 export { Skeleton } from './components/Skeleton';
 export { SkeletonIgnore } from './components/SkeletonIgnore';
 export { withSkeleton } from './components/withSkeleton';

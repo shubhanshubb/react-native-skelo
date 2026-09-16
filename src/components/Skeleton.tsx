@@ -6,7 +6,7 @@ import { SkeletonIgnore } from './SkeletonIgnore';
 import { StyleSkeleton } from '../core/generator/StyleSkeleton';
 import { getDeepExpander } from '../core/deepRegistry';
 import { expandListPlaceholders } from '../core/parser/expandLists';
-import { DEFAULT_CONFIG } from '../constants/defaults';
+import { useSkeletonTheme } from './SkeletonProvider';
 
 /**
  * Main Skeleton component
@@ -36,22 +36,24 @@ import { DEFAULT_CONFIG } from '../constants/defaults';
  * </Skeleton>
  * ```
  */
-export function Skeleton({
-  loading,
-  children,
-  styles,
-  excludeStyles,
-  deep,
-  count = 6,
-  animation = DEFAULT_CONFIG.animation,
-  duration = DEFAULT_CONFIG.duration,
-  baseColor = DEFAULT_CONFIG.baseColor,
-  highlightColor = DEFAULT_CONFIG.highlightColor,
-  borderRadius = DEFAULT_CONFIG.borderRadius,
-  accessible = true,
-  accessibilityLabel = 'Loading content',
-  debug = false,
-}: SkeletonProps) {
+export function Skeleton(props: SkeletonProps) {
+  const theme = useSkeletonTheme();
+  const {
+    loading,
+    children,
+    styles,
+    excludeStyles,
+    deep,
+    count = 6,
+    animation = theme.animation,
+    duration = theme.duration,
+    baseColor = theme.baseColor,
+    highlightColor = theme.highlightColor,
+    borderRadius = theme.borderRadius,
+    accessible = true,
+    accessibilityLabel = 'Loading content',
+    debug = theme.debug,
+  } = props;
   // Parse component tree and generate skeleton.
   // Hooks must run unconditionally (rules of hooks), but parsing stays lazy:
   // we skip the work entirely when not loading or in styles-driven mode.

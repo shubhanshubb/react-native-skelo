@@ -44,6 +44,7 @@ export function withSkeleton<P extends object>(
         loading={loading}
         styles={options.styles}
         excludeStyles={options.excludeStyles}
+        debug={options.debug}
         animation={options.animation}
         duration={options.duration}
         baseColor={options.baseColor}
